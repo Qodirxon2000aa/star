@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useTelegram } from "../../../../context/TelegramContext";
 import "./Stars.css";
 import AnimatedModal from "../../ui/AnimatedModal";
+import starsVideo from "../../../assets/Telegram.mp4";
 
-const starsVideo = "https://m4746.myxvest.ru/Videos/Telegram.mp4";
 
 
 const PRESETS = [
@@ -128,17 +128,7 @@ const Stars = () => {
         {/* Video */}
         <div className="vd">
           <div className="stars-video">
-            <video
-  autoPlay
-  loop
-  muted
-  playsInline
-  preload="auto"
-  style={{ width: "100%", borderRadius: 16 }}
->
-  <source src={starsVideo} type="video/mp4" />
-</video>
-
+            <video src={starsVideo} autoPlay loop muted playsInline />
           </div>
         </div>
 

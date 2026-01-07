@@ -2,20 +2,35 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Dashboard from "./components/pages/Dashboard";
 import Gifts from "./components/pages/Gifts/Gifts";
 import { TelegramProvider } from "../context/TelegramContext";
-import YandexTracker from "./../YandexTracker"; // 🔥 NEW
+import { PreloadProvider, usePreload } from "../context/PreloadContext";
+import WelcomeAnimation from "./components/WelcomeAnimation";
+import YandexTracker from "./../YandexTracker";
+
+const AppContent = () => {
+  const { ready } = usePreload();
+
+  // 🔥 TAYYOR BO‘LMAGUNCHA ROUTER HAM YO‘Q
+  if (!ready) return <WelcomeAnimation />;
+
+  return (
+    <Router>
+      <YandexTracker />
+      <Routes>
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/gifts" element={<Gifts />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
+    </Router>
+  );
+};
 
 function App() {
   return (
     <TelegramProvider>
-      <Router>
-        <YandexTracker /> {/* 🔥 MUHIM */}
-        <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/gifts" element={<Gifts />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
-      </Router>
+      <PreloadProvider>
+        <AppContent />
+      </PreloadProvider>
     </TelegramProvider>
   );
 }
