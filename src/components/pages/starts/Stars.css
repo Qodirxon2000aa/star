@@ -1,16 +1,22 @@
+/* ================== WRAPPER ================== */
 .stars-wrapper {
-  min-height: 100vh;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
+  padding: 0 6px;            /* 👈 faqat 2px yonlardan */
+  box-sizing: border-box;
 }
 
+/* ================== CARD ================== */
 .stars-card {
   width: 100%;
-  max-width: 420px;
+  max-width: 100%;
   border-radius: 20px;
   color: #fff;
 }
 
+/* ================== TITLES ================== */
 .stars-title {
   text-align: center;
   font-size: 22px;
@@ -24,6 +30,7 @@
   margin-bottom: 16px;
 }
 
+/* ================== BALANCE ================== */
 .stars-balance {
   background: #2c2c2e;
   padding: 12px;
@@ -32,10 +39,10 @@
   margin-bottom: 16px;
 }
 
+/* ================== LABEL & INPUT ================== */
 label {
   font-size: 13px;
   color: #aaa;
-  
 }
 
 input {
@@ -46,8 +53,10 @@ input {
   border: none;
   background: #2c2c2e;
   color: #fff;
+  box-sizing: border-box;
 }
 
+/* ================== USERNAME ROW ================== */
 .username-row {
   display: flex;
   gap: 8px;
@@ -63,12 +72,14 @@ input {
   font-weight: 600;
 }
 
+/* ================== OR TEXT ================== */
 .or-text {
   text-align: center;
   color: #777;
   margin: 16px 0 8px;
 }
 
+/* ================== PRESETS ================== */
 .preset-list {
   display: flex;
   flex-direction: column;
@@ -76,6 +87,7 @@ input {
 }
 
 .preset {
+  width: 100%;
   background: #2c2c2e;
   padding: 14px;
   border-radius: 14px;
@@ -83,6 +95,7 @@ input {
   justify-content: space-between;
   cursor: pointer;
   border: 2px solid transparent;
+  box-sizing: border-box;
 }
 
 .preset.active {
@@ -90,12 +103,14 @@ input {
   background: #1a2b45;
 }
 
+/* ================== TOTAL ================== */
 .total {
   margin: 16px 0;
   text-align: center;
   font-size: 16px;
 }
 
+/* ================== BUTTON ================== */
 .buy-btn {
   width: 100%;
   padding: 16px;
@@ -105,8 +120,10 @@ input {
   color: #fff;
   font-size: 16px;
   font-weight: 700;
+  box-sizing: border-box;
 }
 
+/* ================== ALERTS ================== */
 .error {
   background: #ff3b30;
   padding: 10px;
@@ -123,14 +140,16 @@ input {
   margin-bottom: 10px;
 }
 
-
+/* ================== USERNAME BOX ================== */
 .username-box {
+  width: 100%;
   display: flex;
   gap: 10px;
   background: #1c1c1e;
   border-radius: 18px;
   padding: 12px;
   margin-bottom: 10px;
+  box-sizing: border-box;
 }
 
 .username-box input {
@@ -138,8 +157,7 @@ input {
   background: transparent;
   border: none;
   color: #fff;
-  border: 1px solid white;
-  font-size: 10px;
+  font-size: 15px;
 }
 
 .username-box button {
@@ -150,13 +168,9 @@ input {
   cursor: pointer;
 }
 
-.user-loading {
-  color: #aaa;
-  font-size: 14px;
-  margin-bottom: 10px;
-}
-
+/* ================== USER PREVIEW ================== */
 .user-preview {
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -164,6 +178,7 @@ input {
   border-radius: 16px;
   padding: 12px;
   margin-bottom: 16px;
+  box-sizing: border-box;
 }
 
 .user-preview img {
@@ -183,19 +198,22 @@ input {
   color: #aaa;
 }
 
+/* ================== USERNAME INPUT ================== */
 .username-input {
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 12px 14px;
   border-radius: 18px;
   background: #1c1c1e;
-  border: 2px solid #3a3a3c; /* 👈 ko‘rinadigan border */
+  border: 2px solid #3a3a3c;
   margin-bottom: 6px;
+  box-sizing: border-box;
 }
 
 .username-input.filled {
-  border-color: #007aff; /* 👈 user topilganda */
+  border-color: #007aff;
 }
 
 .username-input input {
@@ -220,26 +238,23 @@ input {
   white-space: nowrap;
 }
 
-/* 👤 Avatar input ichida */
+/* ================== AVATAR ================== */
 .input-avatar {
   width: 36px;
   height: 36px;
   border-radius: 50%;
   object-fit: cover;
-  flex-shrink: 0;
   border: 1px solid #444;
 }
 
-
-
-/* 🎬 STARS VIDEO */
-
-.vd{
+/* ================== VIDEO ================== */
+.vd {
   width: 100%;
-    display: flex;
+  display: flex;
   align-items: center;
   justify-content: center;
 }
+
 .stars-video {
   width: 200px;
   height: 200px;
@@ -255,8 +270,9 @@ input {
   object-fit: cover;
 }
 
-
+/* ================== TELEGRAM USER ================== */
 .tg-user-section {
+  width: 100%;
   border-radius: 16px;
   margin-bottom: 14px;
 }
@@ -282,7 +298,6 @@ input {
   cursor: pointer;
 }
 
-/* INPUT */
 .tg-user-input {
   width: 100%;
   background: #2a2a2d;
@@ -292,20 +307,18 @@ input {
   color: #fff;
   font-size: 15px;
   outline: none;
+  box-sizing: border-box;
 }
 
-.tg-user-input::placeholder {
-  color: #777;
-}
-
-/* USER CHIP (rasmdagi kabi) */
 .tg-user-chip {
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 12px;
   background: #2a2a2d;
   border-radius: 18px;
   padding: 10px 12px;
+  box-sizing: border-box;
 }
 
 .tg-user-chip img {
