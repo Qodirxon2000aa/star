@@ -8,7 +8,6 @@ const Header = ({ isPremium, setIsPremium, onOpenMoney }) => {
   const { apiUser, loading } = useTelegram();
   const balance = loading ? "..." : apiUser?.balance || "0";
 
-  // 🌐 Language modal state
   const [isLangOpen, setIsLangOpen] = useState(false);
 
   return (
@@ -25,13 +24,28 @@ const Header = ({ isPremium, setIsPremium, onOpenMoney }) => {
           </div>
 
           {/* 🔥 TOGGLE */}
-          <div
-            className="toggle-switch"
-            onClick={() => setIsPremium(!isPremium)}
-          >
+          <div className="toggle-switch">
             <div className="switch-track">
-              <span className="switch-label">Stars</span>
-              <span className="switch-label">Premium</span>
+
+              {/* ⭐ STARS */}
+              <span
+                className={`switch-label ${!isPremium ? "active" : ""}`}
+                onClick={() => {
+                  if (isPremium) setIsPremium(false);
+                }}
+              >
+                Stars
+              </span>
+
+              {/* 💎 PREMIUM */}
+              <span
+                className={`switch-label ${isPremium ? "active" : ""}`}
+                onClick={() => {
+                  if (!isPremium) setIsPremium(true);
+                }}
+              >
+                Premium
+              </span>
 
               <div
                 className={`switch-thumb ${
@@ -39,9 +53,10 @@ const Header = ({ isPremium, setIsPremium, onOpenMoney }) => {
                 }`}
               >
                 <span className="thumb-text">
-                  {isPremium ? "Premium" : "Stars"}
+                  {isPremium ? "" : " "}
                 </span>
               </div>
+
             </div>
           </div>
 

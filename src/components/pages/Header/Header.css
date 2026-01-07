@@ -1,50 +1,48 @@
-/* Header.css – tozalangan va optimallashtirilgan versiya */
+/* ================= HEADER ================= */
 
 .header {
-  padding: 10px 0px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  flex-direction: column;
-  gap: 12px;
+  padding: 10px 0;
 }
 
 .top-bar {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 0 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  margin: 0 auto;
 }
 
-/* Profil ikonkasi */
-.profile-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-}
+/* ================= GLOBE ================= */
 
-.profile-icon img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Toggle Switch – knob joyida siljiydi */
-.toggle-switch {
-  width: 180px;
+.globe-icon {
+  width: 44px;
   height: 44px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 50px;
-  padding: 4px;
-  position: relative;
+  border-radius: 50%;
+  background: rgba(128, 0, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.globe-icon:hover {
+  transform: scale(1.08);
+  background: rgba(128, 0, 255, 0.35);
+}
+
+/* ================= TOGGLE ================= */
+
+.toggle-switch {
+  width: 200px;
+  height: 44px;
+  padding: 4px;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  position: relative;
   user-select: none;
-  overflow: hidden;
 }
 
 .switch-track {
@@ -54,16 +52,23 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
-  gap: 15px;
+  position: relative;
 }
 
 .switch-label {
   font-size: 15px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.6);
-  z-index: 1;
-  transition: color 0.3s ease;
+  color: rgba(255,255,255,0.55);
+  z-index: 2;
+  cursor: pointer;
+  transition: color 0.25s ease;
 }
+
+.switch-label.active {
+  color: #000;
+}
+
+/* ================= SLIDER ================= */
 
 .switch-thumb {
   position: absolute;
@@ -71,325 +76,67 @@
   left: 4px;
   width: calc(50% - 4px);
   height: calc(100% - 8px);
-  background: white;
   border-radius: 50px;
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: 0;
+
+  /* 🔥 SILLIQLIK */
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  z-index: 1;
 }
 
 .switch-thumb.right {
-  left: calc(50% + 4px - 4px);
+  transform: translateX(100%);
 }
 
 .thumb-text {
-  color: #000;
-  font-weight: bold;
-  font-size: 15px;
-}
-
-.toggle-switch:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-/* O'ng tomondagi balance va globe */
-.right-section {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.money {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 50px;
-  padding: 12px 24px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 18px;
-  font-weight: 600;
-  color: white;
-  min-width: 140px;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.plus-btn {
-  width: 36px;
-  height: 36px;
-  background: #0078ff;
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 10px rgba(0, 120, 255, 0.4);
-  user-select: none;
-}
-
-.plus-btn:hover {
-  background: #0066cc;
-  transform: scale(1.1);
-}
-
-.plus-btn:active {
-  transform: scale(0.95);
-}
-
-/* Globe ikonkasi */
-.globe-icon {
-  width: 44px;
-  height: 44px;
-  background: rgba(128, 0, 255, 0.2);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.globe-icon svg {
-  width: 28px;
-  height: 28px;
-  stroke: white;
-}
-
-/* Language Modal – o'zgarmadi */
-.lang-modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(12px);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  z-index: 9999;
-  animation: fadeIn 0.4s ease;
-}
-
-.lang-modal {
-  background: rgba(30,30,40,0.95);
-  backdrop-filter: blur(20px);
-  border-radius: 24px 24px 0 0;
-  width: 100%;
-  max-width: 420px;
-  padding: 20px;
-  color: white;
-  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.lang-modal-header {
-  position: relative;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.lang-character {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 16px;
-}
-
-.lang-character img {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-}
-
-.close-btn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 32px;
-  cursor: pointer;
-}
-
-.lang-modal h2 {
-  font-size: 22px;
-  margin: 0 0 8px;
-  text-align: center;
-}
-
-.lang-modal p {
-  font-size: 15px;
-  color: rgba(255,255,255,0.7);
-  text-align: center;
-  margin-bottom: 24px;
-}
-
-.lang-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 32px;
-}
-
-.lang-item {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 12px;
-  border-radius: 16px;
-  background: rgba(255,255,255,0.05);
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.lang-item.selected {
-  background: rgba(0, 120, 255, 0.2);
-  border: 1px solid rgba(0, 120, 255, 0.5);
-}
-
-.radio {
-  width: 24px;
-  height: 24px;
-  border: 2px solid rgba(255,255,255,0.4);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.radio-inner {
-  width: 12px;
-  height: 12px;
-  background: #0078ff;
-  border-radius: 50%;
-}
-
-.lang-names div:first-child {
-  font-weight: bold;
-}
-
-.native {
   font-size: 14px;
-  color: rgba(255,255,255,0.6);
+  font-weight: 700;
+  color: #000;
 }
 
-.confirm-btn {
-  width: 100%;
-  background: #0078ff;
-  color: white;
-  border: none;
-  border-radius: 50px;
-  padding: 16px;
-  font-size: 17px;
-  font-weight: bold;
-}
+/* ================= BALANCE ================= */
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
-}
-
-/* Top bar – joyni optimallashtirish */
-.top-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  max-width: 420px;
-  margin: 0 auto;
-  padding: 0 12px; /* biroz qisqartirdik */
-}
-
-/* O'ng tomondagi ikonlar guruhi */
-.right-icons {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-/* Balance + + birlashgan tugma – asosiy yangilik */
 .balance-plus-btn {
   height: 44px;
-  min-width: 10px; /* balans uzun bo'lsa ham sig'adi */
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  padding: 6px 10px;
   border-radius: 50px;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
   cursor: pointer;
-  margin-left: 5px;
-  padding: 5px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  user-select: none;
+  transition: transform 0.25s ease, background 0.25s ease;
 }
 
 .balance-plus-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
   transform: scale(1.05);
-}
-
-.balance-plus-btn:active {
-  transform: scale(0.98);
+  background: rgba(255,255,255,0.18);
 }
 
 .balance-text {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 600;
-  color: white;
+  color: #fff;
   white-space: nowrap;
 }
 
 .plus-icon {
   width: 28px;
   height: 28px;
-  background: #0078ff;
-  color: white;
   border-radius: 50%;
+  background: #0078ff;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #fff;
   font-size: 20px;
   font-weight: bold;
-  flex-shrink: 0; /* kichraymaydi */
-}
-
-/* Globe ikonkasi – avvalgidek */
-.globe-icon {
-  width: 44px;
-  height: 44px;
-  background: rgba(128, 0, 255, 0.2);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.globe-icon:hover {
-  background: rgba(128, 0, 255, 0.3);
-  transform: scale(1.08);
-}
-
-.globe-icon svg {
-  width: 28px;
-  height: 28px;
-  stroke: white;
-}
-
-/* Toggle switch – endi ko'proq joy bor */
-.toggle-switch {
-  width: 200px; /* oldin 180px edi – endi kattaroq qildik */
-  /* qolgan stillar o'zgarmadi */
 }
