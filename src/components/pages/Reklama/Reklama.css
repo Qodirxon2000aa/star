@@ -1,0 +1,117 @@
+.reklama-carousel {
+  width: 100%;
+  max-width: 100%;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  border-radius: 25px;
+  position: relative;
+  padding-bottom: 20px; /* 🔹 Nuqtalar uchun joy ajratildi (tashqariga chiqishi uchun) */
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+  
+}
+
+.reklama-slide {
+  flex: 0 0 100%;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  padding: 0 12px;
+}
+
+/* 🖼 RASM */
+.ad-image-wrapper {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  height: 150px;
+  border-radius: 22px;
+  overflow: hidden;
+}
+
+.ad-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.ad-image-wrapper:hover img {
+  transform: scale(1.05);
+}
+
+/* ● DOTS — TASHQARIDA, PASTDAN 5PX PASTROQ */
+.carousel-dots {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 5;
+  
+  /* 🔹 Asosiy o'zgartirish: bottom emas, top orqali joylash va transform bilan sozlash */
+  bottom: -20px; /* Karusel tashqarisiga chiqarish uchun sal salbiy qiymat */
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transition: 0.25s;
+  cursor: pointer;
+}
+
+.dot.active {
+  background: white;
+  transform: scale(1.3);
+}
+
+/* ===================== */
+/* 📱 MOBIL (phones) */
+/* ===================== */
+@media (max-width: 480px) {
+  .reklama-slide {
+    padding: 0 8px;
+  }
+
+  .ad-image-wrapper {
+    max-width: 100%;
+    height: 140px;
+    border-radius: 18px;
+  }
+
+  /* Mobil uchun ham nuqtalar pastda 5px oraliqda */
+  .carousel-dots {
+    bottom: 2px;
+  }
+}
+
+/* ===================== */
+/* 📱 TABLET */
+/* ===================== */
+@media (max-width: 768px) {
+  .ad-image-wrapper {
+    max-width: 100%;
+    height: 150px;
+  }
+}
+
+/* ===================== */
+/* 🖥 KATTA EKRAN */
+/* ===================== */
+@media (min-width: 1024px) {
+  .ad-image-wrapper {
+    max-width: 420px;
+    height: 170px;
+  }
+
+  .carousel-dots {
+    bottom: -22px; /* Katta ekranda biroz ko'proq joy */
+  }
+}
