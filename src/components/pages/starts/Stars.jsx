@@ -101,7 +101,7 @@ const Stars = () => {
       <br />
         {/* 👤 USERNAME */}
         <label>Kimga yuboramiz?</label>
-    <br /> 
+    <br /> <br />
         <div className="username-box">
           <input
             placeholder="Telegram @username kiriting..."

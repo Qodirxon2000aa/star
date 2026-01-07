@@ -40,6 +40,8 @@
 .section-title {
   font-size: 18px;
   margin: 24px 0 12px 0;
+   font-size: 13px;
+  color: #aaa;
 }
 
 .best-discount {
@@ -204,3 +206,85 @@
 .modal-title { /* ... */ }
 .modal-subtitle { /* ... */ }
 /* va hokazo */
+
+.username-box {
+  display: flex;
+  gap: 10px;
+  background: #1c1c1e;
+  border-radius: 18px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.username-box input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 15px;
+}
+
+.username-box input::placeholder {
+  color: #777;
+}
+
+.username-box button {
+  background: none;
+  border: none;
+  color: #4da6ff;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.user-loading {
+  color: #aaa;
+  font-size: 14px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.user-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #2a2a2d;
+  border-radius: 16px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.user-preview img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-preview .name {
+  font-weight: 600;
+  color: #fff;
+}
+
+.user-preview .username {
+  font-size: 13px;
+  color: #aaa;
+}
+
+.error {
+  background: #ff3b30;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+  margin: 10px 0;
+  color: #fff;
+}
+
+.success {
+  background: #34c759;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+  margin: 10px 0;
+  color: #fff;
+}

@@ -1,21 +1,22 @@
-// Dashboard.jsx
 import React, { useState } from "react";
 import "./Dashboard.css";
 import Header from "../pages/Header/Header.jsx";
 import Premium from "../pages/premuium/Premium.jsx";
 import Stars from "../pages/starts/Stars.jsx";
-import Money from "../pages/Money/Money.jsx";
+import Footer from "../Footer/Footer.jsx"; // ← yangi import
 
 const Dashboard = () => {
-  // 🔥 ASOSIY STATE
-  // false = Stars | true = Premium
   const [isPremium, setIsPremium] = useState(false);
+  const [openModal, setOpenModal] = useState(null);
 
-  // faqat modal bo‘ladiganlar
-  const [openModal, setOpenModal] = useState(null); // "money" | "lang"
+  // Footer uchun active tab (hozircha "home" default)
+  const [activeTab, setActiveTab] = useState("home");
+
+  // Kelajakda activeTab ga qarab content o'zgartirish mumkin
+  // Masalan: activeTab === "profile" ? <Profile /> : ...
 
   return (
-    <div className="dashboard">
+    <div className="dashboard" style={{ paddingBottom: "90px" }}> {/* footer joylashishi uchun */}
       <Header
         isPremium={isPremium}
         setIsPremium={setIsPremium}
@@ -23,12 +24,10 @@ const Dashboard = () => {
         onOpenLang={() => setOpenModal("lang")}
       />
 
-      {/* 🔥 MARKAZIY CONTENT */}
       <div className="dashboard-content">
         {isPremium ? <Premium /> : <Stars />}
       </div>
 
-      {/* MONEY MODAL */}
       {openModal === "money" && (
         <div className="modal-overlay" onClick={() => setOpenModal(null)}>
           <div className="modal-center" onClick={(e) => e.stopPropagation()}>
@@ -36,6 +35,9 @@ const Dashboard = () => {
           </div>
         </div>
       )}
+
+      {/* FOOTER */}
+      <Footer activeTab={activeTab} setActiveTab={setActiveTab} />
     </div>
   );
 };

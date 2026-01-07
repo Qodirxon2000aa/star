@@ -1,16 +1,18 @@
-import React, { useState } from "react";
-import { useTelegram } from "../../../../context/TelegramContext"; // <-- Bu qatorni qo'shing!
+import React, { useState, useEffect } from "react";
+import { useTelegram } from "../../../../context/TelegramContext";
 import "./premium.css";
-// agar avatar yoki boshqa rasm ishlatmoqchi bo'lsangiz
-// import premIcon from "../../../assets/prem.ico";
 
 const PremiumModal = ({ onClose }) => {
   const { createPremiumOrder, apiUser, user } = useTelegram();
+
   const [username, setUsername] = useState("");
+  const [userInfo, setUserInfo] = useState(null);
+  const [checking, setChecking] = useState(false);
+
   const [selectedPlan, setSelectedPlan] = useState("3"); // default 3 oy
   const [sending, setSending] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
   const [insufficientFunds, setInsufficientFunds] = useState(false);
   const [validationError, setValidationError] = useState("");
 
@@ -22,24 +24,51 @@ const PremiumModal = ({ onClose }) => {
     { id: "12", months: 12, discount: "-42%", price: 389999000 },
   ];
 
+  /* 👤 USER PREVIEW – Stars.jsx dagidek qidiruv */
+  useEffect(() => {
+    if (!username || username.length < 4) {
+      setUserInfo(null);
+      return;
+    }
+
+    const clean = username.replace("@", "");
+    setChecking(true);
+
+    fetch(`https://tezpremium.uz/starsapi/user.php?username=@${clean}`)
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.username) {
+          setUserInfo(d);
+        } else {
+          setUserInfo(null);
+        }
+      })
+      .catch(() => setUserInfo(null))
+      .finally(() => setChecking(false));
+  }, [username]);
+
   const handleSelfClick = () => {
     if (user?.username) {
-      setUsername(user.username.replace("@", ""));
+      setUsername("@" + user.username.replace("@", ""));
     }
   };
 
+  const selected = plans.find((p) => p.id === selectedPlan);
+  const totalPrice = selected ? selected.price : 0;
+
   const handleBuy = async () => {
-    if (!username.trim()) {
-      setValidationError("Username kiriting");
+    setValidationError("");
+    setError("");
+    setInsufficientFunds(false);
+
+    if (!userInfo) {
+      setValidationError("Foydalanuvchi topilmadi");
       return;
     }
     if (!selectedPlan) {
       setValidationError("Premium paket tanlang");
       return;
     }
-
-    const selected = plans.find(p => p.id === selectedPlan);
-    const totalPrice = selected.price;
 
     const userBalance = Number(apiUser?.balance || 0);
     if (userBalance < totalPrice) {
@@ -56,21 +85,14 @@ const PremiumModal = ({ onClose }) => {
       });
 
       if (result.ok) {
-        setTimeout(() => {
-          setSending(false);
-          setSuccess(true);
-        }, 1000);
+        setSuccess(true);
       } else {
-        setTimeout(() => {
-          setSending(false);
-          setError(true);
-        }, 800);
+        setError("Xatolik yuz berdi");
       }
     } catch (err) {
-      setTimeout(() => {
-        setSending(false);
-        setError(true);
-      }, 800);
+      setError("Server xatosi");
+    } finally {
+      setSending(false);
     }
   };
 
@@ -78,33 +100,43 @@ const PremiumModal = ({ onClose }) => {
     <div className="premium-overlay" onClick={onClose}>
       <div className="premium-modal animate" onClick={(e) => e.stopPropagation()}>
         {/* Asosiy forma */}
-        {!sending && !success && !error && !insufficientFunds && !validationError && (
+        {!sending && !success && !error && !insufficientFunds && (
           <>
             <h1 className="modal-title">
-              Telegram Premium sotib olish <span className="star">⭐</span>
+              Telegram Premium  <span className="star">⭐</span>
             </h1>
-            <p className="modal-subtitle">
-              O'zingiz yoki do'stlaringiz uchun Visa kartasiz Telegram Premium obunasini xarid qiling.
-            </p>
+           
 
             <div className="section-title">Kimga yuboramiz?</div>
 
-            <div className="username-wrapper">
-              <div className="avatar">DC</div>
+            {/* Username input + O'zimga tugmasi */}
+            <div className="username-box">
               <input
                 type="text"
-                className="username-input"
-                placeholder="Dev Chaudhary"
+                placeholder="Telegram @username kiriting..."
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
-              <button className="self-btn" onClick={handleSelfClick}>
-                O'zimga olamiz
-              </button>
-
+              <button onClick={handleSelfClick}>O‘zimga</button>
             </div>
 
-            <div className="section-title">Muddatni tanlang <span className="best-discount">-42%</span></div>
+            {/* Tekshirilmoqda... */}
+            {checking && <div className="user-loading">🔍 Tekshirilmoqda...</div>}
+
+            {/* User topilganda preview – Stars.jsx dagidek */}
+            {userInfo && (
+              <div className="user-preview">
+                <img src={userInfo.photo} alt="avatar" />
+                <div>
+                  <div className="name">{userInfo.name}</div>
+                  <div className="username">@{userInfo.username}</div>
+                </div>
+              </div>
+            )}
+
+            <div className="section-title">
+              Muddatni tanlang 
+            </div>
 
             <div className="plans-list">
               {plans.map((plan) => (
@@ -122,18 +154,24 @@ const PremiumModal = ({ onClose }) => {
                     </span>
                     <span className="discount">{plan.discount}</span>
                   </div>
-                  <div className="price">{plan.price.toLocaleString().replace(/,/g, " ")} UZS</div>
+                  <div className="price">
+                    {plan.price.toLocaleString().replace(/,/g, " ")} UZS
+                  </div>
                 </div>
               ))}
             </div>
 
-            <button className="buy-button" onClick={handleBuy}>
-              Telegram Premium sovg'a qilish
+            {/* Xatolik yoki yetarli mablag' yo'qligi */}
+            {validationError && <div className="error">{validationError}</div>}
+            {insufficientFunds && <div className="error">Balans yetarli emas</div>}
+            {error && <div className="error">{error}</div>}
+            {success && <div className="success">✅ Muvaffaqiyatli!</div>}
+
+            <button className="buy-button" onClick={handleBuy} disabled={sending}>
+              {sending ? "Yuborilmoqda..." : "Telegram Premium sovg'a qilish"}
             </button>
           </>
         )}
-
-        {/* Boshqa statuslar (loading, success, error) ni oldingi kodingizdan saqlashingiz mumkin */}
       </div>
     </div>
   );
