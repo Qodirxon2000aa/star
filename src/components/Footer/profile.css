@@ -179,3 +179,22 @@
     transform: translateX(100%);
   }
 }
+
+.profile-history-btn {
+  margin-top: 16px;
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(135deg, #6a5af9, #8f7bff);
+  transition: 0.3s;
+}
+
+.profile-history-btn:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 20px rgba(106, 90, 249, 0.4);
+}
