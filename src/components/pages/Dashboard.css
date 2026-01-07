@@ -325,3 +325,41 @@ body {
   justify-content: center;
   width: 100%;
 }
+
+
+
+/* 🔒 GLOBAL SCROLL LOCK */
+html,
+body {
+  height: 100%;
+}
+
+/* Modal ochilganda */
+body.modal-open {
+  overflow: hidden !important;
+  touch-action: none;
+}
+
+/* Dashboard scroll bo‘lmasligi uchun */
+.dashboard {
+  min-height: 100dvh; /* 100vh emas */
+  overflow-y: hidden;
+}
+
+/* Modal overlay har doim ustida */
+.modal-overlay,
+.profile-overlay,
+.referral-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+}
+
+/* Modal ichigina scroll bo‘lsin */
+.modal-center,
+.profile-panel,
+.referral-sheet {
+  max-height: 90dvh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}

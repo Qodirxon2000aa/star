@@ -24,23 +24,21 @@ const Dashboard = () => {
   };
 
   // 🔒 SCROLL LOCK (MUHIM)
-  useEffect(() => {
-    const isAnyModalOpen =
-      openModal === "money" || showReferralModal || showProfile;
+useEffect(() => {
+  const isAnyModalOpen =
+    openModal === "money" || showReferralModal || showProfile;
 
-    if (isAnyModalOpen) {
-      document.body.style.overflow = "hidden";
-      document.body.style.touchAction = "none";
-    } else {
-      document.body.style.overflow = "";
-      document.body.style.touchAction = "";
-    }
+  if (isAnyModalOpen) {
+    document.body.classList.add("modal-open");
+  } else {
+    document.body.classList.remove("modal-open");
+  }
 
-    return () => {
-      document.body.style.overflow = "";
-      document.body.style.touchAction = "";
-    };
-  }, [openModal, showReferralModal, showProfile]);
+  return () => {
+    document.body.classList.remove("modal-open");
+  };
+}, [openModal, showReferralModal, showProfile]);
+
 
   return (
     <div className="dashboard" style={{ paddingBottom: "90px" }}>
