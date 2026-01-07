@@ -294,3 +294,54 @@
   from { opacity: 0 }
   to { opacity: 1 }
 }
+
+
+/* Kichik toast rejimi */
+.tgx-modal.small-toast {
+  width: 90%;
+  max-width: 360px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  text-align: center;
+  animation: toastIn 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tgx-modal.small-toast .tgx-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.tgx-modal.small-toast .small-message {
+  font-size: 16px;
+  margin: 8px 0;
+  color: #ddd;
+}
+
+.tgx-modal.small-toast.info {
+  background: #2c2c2e;
+  border-left: 5px solid #0d8bff;
+}
+
+/* Toast kirish animatsiyasi */
+@keyframes toastIn {
+  0% {
+    opacity: 0;
+    transform: translateY(50px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Chiqish animatsiyasi uchun JS da class qo'shish kerak (ixtiyoriy) */
+.tgx-modal.leaving {
+  animation: toastOut 0.3s ease forwards;
+}
+
+@keyframes toastOut {
+  to {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+}

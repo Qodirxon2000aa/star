@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useTelegram } from "../../../../context/TelegramContext";
 import "./Stars.css";
 import AnimatedModal from "../../ui/AnimatedModal";
-import starsVideo from "../../../assets/Telegram.mp4"; // Video yo'lini o'zingga moslashtir
+import starsVideo from "../../../assets/Telegram.mp4";
 
 const PRESETS = [
   { stars: 50, price: "12 999" },
@@ -14,12 +14,8 @@ const PRESETS = [
 const Stars = () => {
   const { createOrder, apiUser, user } = useTelegram();
 
-  const [modal, setModal] = useState({
-    open: false,
-    type: "",
-    title: "",
-    message: "",
-  });
+  const [modal, setModal] = useState({ open: false, type: "", title: "", message: "" });
+  const [userNotFoundToast, setUserNotFoundToast] = useState(false); // Yangi toast state
 
   const [username, setUsername] = useState("");
   const [userInfo, setUserInfo] = useState(null);
@@ -33,7 +29,7 @@ const Stars = () => {
     setModal({ open: true, type, title, message });
   };
 
-  /* ⭐ Narxni olish */
+  /* Narxni olish */
   useEffect(() => {
     fetch("https://tezpremium.uz/webapp/settings.php")
       .then((r) => r.json())
@@ -44,38 +40,52 @@ const Stars = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  /* 👤 Username bo'yicha foydalanuvchini qidirish */
+  /* Foydalanuvchini qidirish + Toast logikasi */
   useEffect(() => {
-    if (!username || username.length < 4) {
-
+    if (!username || username.trim().length < 4) {
       setUserInfo(null);
+      setUserNotFoundToast(false);
       return;
     }
 
-    const clean = username.replace("@", "");
+    const clean = username.trim().replace("@", "");
     setChecking(true);
 
     fetch(`https://tezpremium.uz/starsapi/user.php?username=@${clean}`)
       .then((r) => r.json())
       .then((d) => {
-        if (d.username) setUserInfo(d);
-        else setUserInfo(null);
+        if (d.username) {
+          setUserInfo(d);
+          setUserNotFoundToast(false); // topildi → toast o‘chadi
+        } else {
+          setUserInfo(null);
+          setUserNotFoundToast(true); // topilmadi → toast ko‘rsatiladi
+
+          // 3 soniyadan keyin avto yopiladi
+          const timer = setTimeout(() => {
+            setUserNotFoundToast(false);
+          }, 3000);
+
+          return () => clearTimeout(timer); // cleanup
+        }
       })
-      .catch(() => setUserInfo(null))
+      .catch(() => {
+        setUserInfo(null);
+        setUserNotFoundToast(true);
+        setTimeout(() => setUserNotFoundToast(false), 3000);
+      })
       .finally(() => setChecking(false));
   }, [username]);
 
   const balance = apiUser?.balance || 0;
   const totalPrice = amount && price ? Number(amount) * price : 0;
 
-  /* 👤 O'zimga */
   const handleSelf = () => {
     if (user?.username) {
       setUsername("@" + user.username.replace("@", ""));
     }
   };
 
-  /* 💳 Yuborish */
   const handleSubmit = async () => {
     if (!userInfo) {
       return openModal("error", "Xatolik", "Foydalanuvchi topilmadi");
@@ -98,8 +108,8 @@ const Stars = () => {
       });
 
       if (res.ok) {
-        openModal("success", "Muvaffaqiyatli 🎉", "Telegram Stars muvaffaqiyatli yuborildi");
-        setAmount(""); // muvaffaqiyatdan keyin tozalash ixtiyoriy
+        openModal("success", "Muvaffaqiyatli", "Telegram Stars muvaffaqiyatli yuborildi");
+        setAmount("");
       } else {
         openModal("error", "Xatolik", "Buyurtma bajarilmadi");
       }
@@ -113,16 +123,16 @@ const Stars = () => {
   return (
     <div className="stars-wrapper">
       <div className="stars-card">
-        {/* 🎬 Video */}
+        {/* Video */}
         <div className="vd">
           <div className="stars-video">
             <video src={starsVideo} autoPlay loop muted playsInline />
           </div>
         </div>
 
-        <h2 className="stars-title">Telegram Stars ⭐</h2>
+        <h2 className="stars-title">Telegram Stars</h2>
 
-        {/* 👤 Kimga yuboramiz */}
+        {/* Kimga yuboramiz */}
         <div className="tg-user-section">
           <div className="tg-user-header">
             <div className="tg-user-title">Kimga yuboramiz?</div>
@@ -158,7 +168,7 @@ const Stars = () => {
           )}
         </div>
 
-        {/* ⭐ Miqdor */}
+        {/* Miqdor */}
         <label>Telegram Yulduzlari miqdori</label>
         <input
           type="number"
@@ -177,7 +187,7 @@ const Stars = () => {
               className={`preset ${Number(amount) === p.stars ? "active" : ""}`}
               onClick={() => setAmount(p.stars)}
             >
-              ⭐ {p.stars} Stars
+              {p.stars} Stars
               <span>{p.price} UZS</span>
             </div>
           ))}
@@ -194,17 +204,26 @@ const Stars = () => {
           disabled={sending || !userInfo || !amount}
           onClick={handleSubmit}
         >
-          {sending ? "Yuborilmoqda..." : "⭐ Sotib olish"}
+          {sending ? "Yuborilmoqda..." : "Sotib olish"}
         </button>
       </div>
 
-      {/* Modal */}
+      {/* Katta modal — muhim xabarlar uchun */}
       <AnimatedModal
         open={modal.open}
         type={modal.type}
         title={modal.title}
         message={modal.message}
         onClose={() => setModal({ ...modal, open: false })}
+      />
+
+      {/* Kichik toast — faqat foydalanuvchi topilmaganda */}
+      <AnimatedModal
+        open={userNotFoundToast}
+        type="info"
+        message="Foydalanuvchi topilmadi. To‘g‘ri @username kiriting."
+        onClose={() => setUserNotFoundToast(false)}
+        small={true}
       />
     </div>
   );
