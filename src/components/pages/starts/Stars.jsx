@@ -3,7 +3,7 @@ import { useTelegram } from "../../../../context/TelegramContext";
 import "./Stars.css";
 
 // ❗ VIDEO PATH (o‘zing qo‘yasan)
-import starsVideo from "../../../assets/Telegram.mov"; // ⬅️ shu joyni keyin almashtirasan
+import starsVideo from "../../../assets/Telegram.mp4"; // ⬅️ shu joyni keyin almashtirasan
 
 const PRESETS = [
   { stars: 50, price: "12 999" },

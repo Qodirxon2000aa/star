@@ -5,6 +5,8 @@ import "./premium.css";
 // ❗ VIDEO PATH (keyin o‘zing almashtirasan)
 import premiumVideo from "../../../assets/prem.mp4";
 
+
+
 const PremiumModal = ({ onClose }) => {
   const { createPremiumOrder, apiUser, user } = useTelegram();
 
