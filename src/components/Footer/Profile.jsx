@@ -61,10 +61,7 @@ const Profile = ({ onClose }) => {
         </div>
 
         <div className="profile-list">
-          <div className="profile-item">
-            <span>ID</span>
-            <strong>{user.id}</strong>
-          </div>
+         
 
           <div className="profile-item">
             <span>Balans</span>

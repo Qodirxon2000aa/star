@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Dashboard.css";
 
 import Header from "../pages/Header/Header.jsx";
@@ -22,6 +22,25 @@ const Dashboard = () => {
     setActiveTab("invite");
     setShowReferralModal(true);
   };
+
+  // 🔒 SCROLL LOCK (MUHIM)
+  useEffect(() => {
+    const isAnyModalOpen =
+      openModal === "money" || showReferralModal || showProfile;
+
+    if (isAnyModalOpen) {
+      document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
+    } else {
+      document.body.style.overflow = "";
+      document.body.style.touchAction = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+      document.body.style.touchAction = "";
+    };
+  }, [openModal, showReferralModal, showProfile]);
 
   return (
     <div className="dashboard" style={{ paddingBottom: "90px" }}>
