@@ -117,30 +117,44 @@ const Stars = () => {
 
         <br />
 
-        {/* 👤 USERNAME */}
-        <label>Kimga yuboramiz?</label>
-        <br /><br />
+       <div className="tg-user-section">
+  <div className="tg-user-header">
+    <div className="tg-user-title">Kimga yuboramiz?</div>
+    <button className="tg-self-btn" onClick={handleSelf}>
+      O‘zimga
+    </button>
+  </div>
 
-        <div className="username-box">
-          <input
-            placeholder="Telegram @username kiriting..."
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <button onClick={handleSelf}>O‘zimga</button>
-        </div>
+  {!userInfo && (
+    <input
+      className="tg-user-input"
+      placeholder="Telegram @username kiriting..."
+      value={username}
+      onChange={(e) => setUsername(e.target.value)}
+    />
+  )}
 
-        {checking && <div className="user-loading">🔍 Tekshirilmoqda...</div>}
 
-        {userInfo && (
-          <div className="user-preview">
-            <img src={userInfo.photo} alt="avatar" />
-            <div>
-              <div className="name">{userInfo.name}</div>
-              <div className="username">@{userInfo.username}</div>
-            </div>
-          </div>
-        )}
+  {userInfo && (
+    <div className="tg-user-chip">
+      <img src={userInfo.photo} alt="avatar" />
+      <div className="tg-user-info">
+        <div className="tg-user-name">{userInfo.name}</div>
+        <div className="tg-user-username">@{userInfo.username}</div>
+      </div>
+      <button
+        className="tg-user-clear"
+        onClick={() => {
+          setUsername("");
+          setUserInfo(null);
+        }}
+      >
+        ×
+      </button>
+    </div>
+  )}
+</div>
+
 
         {/* ⭐ AMOUNT */}
         <label>Telegram Yulduzlari miqdori</label>
