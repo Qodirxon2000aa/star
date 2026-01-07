@@ -302,3 +302,90 @@
   height: 100%;
   object-fit: cover;
 }
+
+
+
+
+
+/* ===== TELEGRAM STYLE USER INPUT ===== */
+
+.tg-user-section {
+  border-radius: 16px;
+  margin-bottom: 14px;
+}
+
+.tg-user-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.tg-user-title {
+  font-size: 13px;
+  color: #aaa;
+}
+
+.tg-self-btn {
+  background: none;
+  border: none;
+  color: #4da6ff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* INPUT */
+.tg-user-input {
+  width: 100%;
+  background: #2a2a2d;
+  border: none;
+  border-radius: 14px;
+  padding: 12px 14px;
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+}
+
+.tg-user-input::placeholder {
+  color: #777;
+}
+
+/* USER CHIP (rasmdagi kabi) */
+.tg-user-chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #2a2a2d;
+  border-radius: 18px;
+  padding: 10px 12px;
+}
+
+.tg-user-chip img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.tg-user-info {
+  flex: 1;
+}
+
+.tg-user-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.tg-user-username {
+  font-size: 13px;
+  color: #aaa;
+}
+
+.tg-user-clear {
+  background: none;
+  border: none;
+  color: #777;
+  font-size: 20px;
+  cursor: pointer;
+}
