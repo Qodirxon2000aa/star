@@ -1,7 +1,7 @@
 // src/components/ReferralModal.jsx
 import React from "react";
 import "./ReferralModal.css";
-import image from "../../../src/assets/prem.mp4"
+import image from "../../../src/assets/share.mp4"
 const ReferralModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 

@@ -1,50 +1,56 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./AnimatedModal.css";
 
-const AnimatedModal = ({ open, type = "success", title, message, onClose, small = false }) => {
-  const [isLeaving, setIsLeaving] = useState(false);
+const CONFIG = {
+  success: { icon: "✦", label: "SUCCESS" },
+  error: { icon: "✖", label: "ERROR" },
+  warning: { icon: "⚠", label: "WARNING" },
+  info: { icon: "ℹ", label: "INFO" },
+};
+
+const AnimatedModal = ({
+  open,
+  type = "info",
+  title,
+  message,
+  onClose,
+  small = false,
+}) => {
+  const [show, setShow] = useState(open);
 
   useEffect(() => {
-    if (!open) {
-      setIsLeaving(false);
-    }
+    if (open) setShow(true);
   }, [open]);
 
-  const handleClose = () => {
-    if (small) {
-      // Toast uchun yumshoq chiqish
-      setIsLeaving(true);
-      setTimeout(() => {
-        onClose();
-      }, 400); // toastOut animatsiya vaqti
-    } else {
-      onClose();
-    }
+  const close = () => {
+    setShow(false);
+    setTimeout(onClose, 500);
   };
 
-  if (!open && !isLeaving) return null;
+  if (!open && !show) return null;
 
   return (
-    <div className="tgx-overlay" onClick={handleClose}>
+    <div className="cx-overlay" onClick={close}>
       <div
-        className={`tgx-modal ${type} ${small ? "small-toast" : ""} ${isLeaving ? "leaving" : ""}`}
+        className={`cx-modal ${type} ${open ? "cx-in" : "cx-out"} ${
+          small ? "cx-toast" : ""
+        }`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="tgx-icon">
-          {type === "success" && "✅"}
-          {type === "error" && "❌"}
-          {type === "warning" && "⚠️"}
-          {type === "info" && "ℹ️"}
-        </div>
+        {/* Neon Ring */}
+        <div className="cx-ring" />
 
-        {!small && title && <div className="tgx-title">{title}</div>}
+        {/* Icon */}
+        <div className="cx-icon">{CONFIG[type].icon}</div>
 
-        <div className={`tgx-message ${small ? "small-message" : ""}`}>
-          {message}
-        </div>
+        {!small && <div className="cx-label">{CONFIG[type].label}</div>}
+
+        {title && !small && <h2 className="cx-title">{title}</h2>}
+
+        <p className="cx-message">{message}</p>
 
         {!small && (
-          <button className="tgx-btn" onClick={handleClose}>
+          <button className="cx-btn" onClick={close}>
             Yopish
           </button>
         )}
