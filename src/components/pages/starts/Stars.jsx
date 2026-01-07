@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useTelegram } from "../../../../context/TelegramContext";
 import "./Stars.css";
-
-// ❗ VIDEO PATH (o‘zing qo‘yasan)
-import starsVideo from "../../../assets/Telegram.mp4"; // ⬅️ shu joyni keyin almashtirasan
+import AnimatedModal from "../../ui/AnimatedModal";
+import starsVideo from "../../../assets/Telegram.mp4"; // Video yo'lini o'zingga moslashtir
 
 const PRESETS = [
   { stars: 50, price: "12 999" },
@@ -15,32 +14,40 @@ const PRESETS = [
 const Stars = () => {
   const { createOrder, apiUser, user } = useTelegram();
 
+  const [modal, setModal] = useState({
+    open: false,
+    type: "",
+    title: "",
+    message: "",
+  });
+
   const [username, setUsername] = useState("");
   const [userInfo, setUserInfo] = useState(null);
   const [checking, setChecking] = useState(false);
-
   const [amount, setAmount] = useState("");
   const [price, setPrice] = useState(0);
   const [loading, setLoading] = useState(true);
-
   const [sending, setSending] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
 
-  /* ⭐ PRICE */
+  const openModal = (type, title, message) => {
+    setModal({ open: true, type, title, message });
+  };
+
+  /* ⭐ Narxni olish */
   useEffect(() => {
     fetch("https://tezpremium.uz/webapp/settings.php")
       .then((r) => r.json())
       .then((d) => {
         if (d.ok) setPrice(Number(d.settings.price));
-        setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => console.error("Narx yuklanmadi"))
+      .finally(() => setLoading(false));
   }, []);
 
-  /* 👤 USER PREVIEW */
+  /* 👤 Username bo'yicha foydalanuvchini qidirish */
   useEffect(() => {
     if (!username || username.length < 4) {
+
       setUserInfo(null);
       return;
     }
@@ -51,34 +58,37 @@ const Stars = () => {
     fetch(`https://tezpremium.uz/starsapi/user.php?username=@${clean}`)
       .then((r) => r.json())
       .then((d) => {
-        d.username ? setUserInfo(d) : setUserInfo(null);
+        if (d.username) setUserInfo(d);
+        else setUserInfo(null);
       })
       .catch(() => setUserInfo(null))
       .finally(() => setChecking(false));
   }, [username]);
 
   const balance = apiUser?.balance || 0;
-  const totalPrice = amount && price ? amount * price : 0;
+  const totalPrice = amount && price ? Number(amount) * price : 0;
 
-  /* 👤 O'ZIMGA */
+  /* 👤 O'zimga */
   const handleSelf = () => {
     if (user?.username) {
       setUsername("@" + user.username.replace("@", ""));
     }
   };
 
-  /* 💳 SUBMIT */
+  /* 💳 Yuborish */
   const handleSubmit = async () => {
-    setError("");
-    setSuccess(false);
-
-    if (!userInfo) return setError("Foydalanuvchi topilmadi");
-    if (amount < 50 || amount > 10000)
-      return setError("50 – 10 000 oralig‘ida bo‘lishi kerak");
-    if (balance < totalPrice) return setError("Balans yetarli emas");
+    if (!userInfo) {
+      return openModal("error", "Xatolik", "Foydalanuvchi topilmadi");
+    }
+    if (Number(amount) < 50 || Number(amount) > 10000) {
+      return openModal("warning", "Noto‘g‘ri miqdor", "50 – 10 000 oralig‘ida bo‘lishi kerak");
+    }
+    if (balance < totalPrice) {
+      const diff = totalPrice - balance;
+      return openModal("warning", "Balans yetarli emas", `Yana ${diff.toLocaleString()} UZS yetishmayapti`);
+    }
 
     setSending(true);
-
     try {
       const res = await createOrder({
         amount: Number(amount),
@@ -87,9 +97,14 @@ const Stars = () => {
         overall: totalPrice,
       });
 
-      res.ok ? setSuccess(true) : setError("Xatolik yuz berdi");
-    } catch {
-      setError("Server xatosi");
+      if (res.ok) {
+        openModal("success", "Muvaffaqiyatli 🎉", "Telegram Stars muvaffaqiyatli yuborildi");
+        setAmount(""); // muvaffaqiyatdan keyin tozalash ixtiyoriy
+      } else {
+        openModal("error", "Xatolik", "Buyurtma bajarilmadi");
+      }
+    } catch (err) {
+      openModal("error", "Server xatosi", "API bilan muammo yuz berdi");
     } finally {
       setSending(false);
     }
@@ -98,75 +113,63 @@ const Stars = () => {
   return (
     <div className="stars-wrapper">
       <div className="stars-card">
-
-        {/* 🎬 VIDEO (TITLE TEPASIDA) */}
+        {/* 🎬 Video */}
         <div className="vd">
-            <div className="stars-video">
-          <video
-            src={starsVideo}
-            autoPlay
-            loop
-            muted
-            playsInline
-          />
+          <div className="stars-video">
+            <video src={starsVideo} autoPlay loop muted playsInline />
+          </div>
         </div>
-        </div>
-      
 
         <h2 className="stars-title">Telegram Stars ⭐</h2>
 
-        <br />
+        {/* 👤 Kimga yuboramiz */}
+        <div className="tg-user-section">
+          <div className="tg-user-header">
+            <div className="tg-user-title">Kimga yuboramiz?</div>
+            <button className="tg-self-btn" onClick={handleSelf}>
+              O‘zimga
+            </button>
+          </div>
 
-       <div className="tg-user-section">
-  <div className="tg-user-header">
-    <div className="tg-user-title">Kimga yuboramiz?</div>
-    <button className="tg-self-btn" onClick={handleSelf}>
-      O‘zimga
-    </button>
-  </div>
+          {!userInfo ? (
+            <input
+              className="tg-user-input"
+              placeholder="Telegram @username kiriting..."
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          ) : (
+            <div className="tg-user-chip">
+              <img src={userInfo.photo} alt="avatar" />
+              <div className="tg-user-info">
+                <div className="tg-user-name">{userInfo.name}</div>
+                <div className="tg-user-username">@{userInfo.username}</div>
+              </div>
+              <button
+                className="tg-user-clear"
+                onClick={() => {
+                  setUsername("");
+                  setUserInfo(null);
+                }}
+              >
+                ×
+              </button>
+            </div>
+          )}
+        </div>
 
-  {!userInfo && (
-    <input
-      className="tg-user-input"
-      placeholder="Telegram @username kiriting..."
-      value={username}
-      onChange={(e) => setUsername(e.target.value)}
-    />
-  )}
-
-
-  {userInfo && (
-    <div className="tg-user-chip">
-      <img src={userInfo.photo} alt="avatar" />
-      <div className="tg-user-info">
-        <div className="tg-user-name">{userInfo.name}</div>
-        <div className="tg-user-username">@{userInfo.username}</div>
-      </div>
-      <button
-        className="tg-user-clear"
-        onClick={() => {
-          setUsername("");
-          setUserInfo(null);
-        }}
-      >
-        ×
-      </button>
-    </div>
-  )}
-</div>
-
-
-        {/* ⭐ AMOUNT */}
+        {/* ⭐ Miqdor */}
         <label>Telegram Yulduzlari miqdori</label>
         <input
           type="number"
           placeholder="50 dan 10 000 gacha"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
+          className="inputs"
         />
+        <br /> <br />
 
-        <br /><br />
-
+        {/* Presets */}
         <div className="preset-list">
           {PRESETS.map((p) => (
             <div
@@ -180,17 +183,29 @@ const Stars = () => {
           ))}
         </div>
 
+        {/* Jami narx */}
         <div className="total">
           Jami: <strong>{totalPrice.toLocaleString()} UZS</strong>
         </div>
 
-        {error && <div className="error">{error}</div>}
-        {success && <div className="success">✅ Muvaffaqiyatli!</div>}
-
-        <button className="buy-btn" disabled={sending} onClick={handleSubmit}>
+        {/* Tugma */}
+        <button
+          className="buy-btn"
+          disabled={sending || !userInfo || !amount}
+          onClick={handleSubmit}
+        >
           {sending ? "Yuborilmoqda..." : "⭐ Sotib olish"}
         </button>
       </div>
+
+      {/* Modal */}
+      <AnimatedModal
+        open={modal.open}
+        type={modal.type}
+        title={modal.title}
+        message={modal.message}
+        onClose={() => setModal({ ...modal, open: false })}
+      />
     </div>
   );
 };

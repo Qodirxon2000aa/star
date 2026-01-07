@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useTelegram } from "../../../../context/TelegramContext";
 import "./premium.css";
 
-// ❗ VIDEO PATH (keyin o‘zing almashtirasan)
+// VIDEO PATH (o'zingiz almashtirasiz)
 import premiumVideo from "../../../assets/prem.mp4";
 
-
+// AnimatedModal import qilindi
+import AnimatedModal from "../../ui/AnimatedModal"; // yo'lni loyihangizga qarab tuzating
 
 const PremiumModal = ({ onClose }) => {
   const { createPremiumOrder, apiUser, user } = useTelegram();
@@ -16,10 +17,16 @@ const PremiumModal = ({ onClose }) => {
 
   const [selectedPlan, setSelectedPlan] = useState("3");
   const [sending, setSending] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState("");
-  const [insufficientFunds, setInsufficientFunds] = useState(false);
+
   const [validationError, setValidationError] = useState("");
+
+  // AnimatedModal uchun state
+  const [animatedModal, setAnimatedModal] = useState({
+    open: false,
+    type: "success", // success | error | warning
+    title: "",
+    message: "",
+  });
 
   const balance = apiUser?.balance || "0";
 
@@ -59,8 +66,6 @@ const PremiumModal = ({ onClose }) => {
 
   const handleBuy = async () => {
     setValidationError("");
-    setError("");
-    setInsufficientFunds(false);
 
     if (!userInfo) {
       setValidationError("Foydalanuvchi topilmadi");
@@ -69,7 +74,12 @@ const PremiumModal = ({ onClose }) => {
 
     const userBalance = Number(apiUser?.balance || 0);
     if (userBalance < totalPrice) {
-      setInsufficientFunds(true);
+      setAnimatedModal({
+        open: true,
+        type: "warning",
+        title: "Balans yetarli emas",
+        message: "Hisobingizda yetarlicha mablag' yo'q. Iltimos, balansni to'ldiring.",
+      });
       return;
     }
 
@@ -81,9 +91,32 @@ const PremiumModal = ({ onClose }) => {
         overall: totalPrice,
       });
 
-      result.ok ? setSuccess(true) : setError("Xatolik yuz berdi");
-    } catch {
-      setError("Server xatosi");
+      if (result.ok) {
+        setAnimatedModal({
+          open: true,
+          type: "success",
+          title: "Muvaffaqiyatli!",
+          message: `Telegram Premium ${selectedPlan} oyga sovg'a qilindi! ⭐`,
+        });
+        // Muvaffaqiyatdan keyin formani tozalash
+        setUsername("");
+        setUserInfo(null);
+        setSelectedPlan("3");
+      } else {
+        setAnimatedModal({
+          open: true,
+          type: "error",
+          title: "Xatolik yuz berdi",
+          message: "Premium sovg'a qilishda muammo yuz berdi. Keyinroq urinib ko'ring.",
+        });
+      }
+    } catch (err) {
+      setAnimatedModal({
+        open: true,
+        type: "error",
+        title: "Server xatosi",
+        message: "Ulanishda muammo bor. Internet aloqangizni tekshiring.",
+      });
     } finally {
       setSending(false);
     }
@@ -92,118 +125,110 @@ const PremiumModal = ({ onClose }) => {
   return (
     <div className="premium-overlay" onClick={onClose}>
       <div className="premium-modal animate" onClick={(e) => e.stopPropagation()}>
-          <div className="vd">
- <div className="premium-video">
-          <video
-            src={premiumVideo}
-            autoPlay
-            loop
-            muted
-            playsInline
-          />
-        </div>
+        <div className="vd">
+          <div className="premium-video">
+            <video src={premiumVideo} autoPlay loop muted playsInline />
           </div>
-    
-       
+        </div>
 
-        {!sending && !success && !error && !insufficientFunds && (
-          <>
-            <h1 className="modal-title">
-              Telegram Premium <span className="star">⭐</span>
-            </h1>
+        <h1 className="modal-title">
+          Telegram Premium <span className="star">⭐</span>
+        </h1>
 
-           <div className="section-title">Kimga yuboramiz?</div>
+        <div className="section-title">Kimga yuboramiz?</div>
 
-
-            <div className="tg-user-section">
-  <div className="tg-user-header">
-    <div className="tg-user-title">Kimga yuboramiz?</div>
-    <button className="tg-self-btn" onClick={handleSelfClick}>
-      O‘zimga
-    </button>
-  </div>
-
-  {!userInfo && (
-    <input
-      className="tg-user-input"
-      type="text"
-      placeholder="Telegram @username kiriting..."
-      value={username}
-      onChange={(e) => setUsername(e.target.value)}
-    />
-  )}
-
-
-  {userInfo && (
-    <div className="tg-user-chip">
-      <img src={userInfo.photo} alt="avatar" />
-      <div className="tg-user-info">
-        <div className="tg-user-name">{userInfo.name}</div>
-        <div className="tg-user-username">@{userInfo.username}</div>
-      </div>
-      <button
-        className="tg-user-clear"
-        onClick={() => {
-          setUsername("");
-          setUserInfo(null);
-        }}
-      >
-        ×
-      </button>
-    </div>
-  )}
-</div>
-
-
-          
-
-        
-            <div className="section-title">Muddatni tanlang</div>
-
-            <div className="plans-list">
-              {plans.map((plan) => (
-                <div
-                  key={plan.id}
-                  className={`plan-card ${
-                    selectedPlan === plan.id ? "selected" : ""
-                  }`}
-                  onClick={() => setSelectedPlan(plan.id)}
-                >
-                  <div className="radio-circle">
-                    {selectedPlan === plan.id && (
-                      <div className="radio-inner"></div>
-                    )}
-                  </div>
-                  <div className="plan-info">
-                    <span className="duration">
-                      {plan.months === 12
-                        ? "1 yil"
-                        : plan.months === 6
-                        ? "6 oy"
-                        : "3 oy"}
-                    </span>
-                    <span className="discount">{plan.discount}</span>
-                  </div>
-                  <div className="price">
-                    {plan.price.toLocaleString().replace(/,/g, " ")} UZS
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {validationError && <div className="error">{validationError}</div>}
-            {insufficientFunds && (
-              <div className="error">Balans yetarli emas</div>
-            )}
-            {error && <div className="error">{error}</div>}
-            {success && <div className="success">✅ Muvaffaqiyatli!</div>}
-
-            <button className="buy-button" onClick={handleBuy} disabled={sending}>
-              {sending ? "Yuborilmoqda..." : "Telegram Premium sovg'a qilish"}
+        <div className="tg-user-section">
+          <div className="tg-user-header">
+            <div className="tg-user-title">Kimga yuboramiz?</div>
+            <button className="tg-self-btn" onClick={handleSelfClick}>
+              O‘zimga
             </button>
-          </>
-        )}
+          </div>
+
+          {!userInfo && (
+            <input
+              className="tg-user-input"
+              type="text"
+              placeholder="Telegram @username kiriting..."
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          )}
+
+          {userInfo && (
+            <div className="tg-user-chip">
+              <img src={userInfo.photo} alt="avatar" />
+              <div className="tg-user-info">
+                <div className="tg-user-name">{userInfo.name}</div>
+                <div className="tg-user-username">@{userInfo.username}</div>
+              </div>
+              <button
+                className="tg-user-clear"
+                onClick={() => {
+                  setUsername("");
+                  setUserInfo(null);
+                }}
+              >
+                ×
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="section-title">Muddatni tanlang</div>
+
+        <div className="plans-list">
+          {plans.map((plan) => (
+            <div
+              key={plan.id}
+              className={`plan-card ${selectedPlan === plan.id ? "selected" : ""}`}
+              onClick={() => setSelectedPlan(plan.id)}
+            >
+              <div className="radio-circle">
+                {selectedPlan === plan.id && <div className="radio-inner"></div>}
+              </div>
+              <div className="plan-info">
+                <span className="duration">
+                  {plan.months === 12
+                    ? "1 yil"
+                    : plan.months === 6
+                    ? "6 oy"
+                    : "3 oy"}
+                </span>
+                <span className="discount">{plan.discount}</span>
+              </div>
+              <div className="price">
+                {plan.price.toLocaleString().replace(/,/g, " ")} UZS
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {validationError && <div className="error">{validationError}</div>}
+
+        <button
+          className="buy-button"
+          onClick={handleBuy}
+          disabled={sending || !userInfo}
+        >
+          {sending ? "Yuborilmoqda..." : "Telegram Premium sovg'a qilish"}
+        </button>
       </div>
+
+      {/* Animated Modal - barcha natijalar shu orqali chiqadi */}
+      <AnimatedModal
+        open={animatedModal.open}
+        type={animatedModal.type}
+        title={animatedModal.title}
+        message={animatedModal.message}
+        onClose={() => {
+          setAnimatedModal({ ...animatedModal, open: false });
+          // Muvaffaqiyatli bo'lsa butun modalni yopamiz
+          if (animatedModal.type === "success") {
+            onClose();
+          }
+        }}
+      />
     </div>
   );
 };

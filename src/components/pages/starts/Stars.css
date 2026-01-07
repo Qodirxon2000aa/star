@@ -89,7 +89,7 @@ input {
 .preset {
   width: 100%;
   background: #2c2c2e;
-  padding: 8px;
+  padding: 6px;
   border-radius: 14px;
   display: flex;
   justify-content: space-between;
@@ -303,7 +303,7 @@ input {
   background: #2a2a2d;
   border: none;
   border-radius: 14px;
-  padding: 12px 14px;
+  padding: 10px 14px;
   color: #fff;
   font-size: 15px;
   outline: none;
@@ -317,8 +317,12 @@ input {
   gap: 12px;
   background: #2a2a2d;
   border-radius: 18px;
-  padding: 10px 12px;
+  padding: 4px 12px;
   box-sizing: border-box;
+}
+.inputs{
+  width: 100%;
+  height: 20px;
 }
 
 .tg-user-chip img {
