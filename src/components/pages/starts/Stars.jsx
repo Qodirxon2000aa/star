@@ -97,13 +97,11 @@ const Stars = () => {
       <div className="stars-card">
         <h2 className="stars-title">Telegram Stars ⭐</h2>
 
-        <div className="stars-balance">
-          Balans: <strong>{balance.toLocaleString()} UZS</strong>
-        </div>
-
+   
+      <br />
         {/* 👤 USERNAME */}
         <label>Kimga yuboramiz?</label>
-
+    <br /> 
         <div className="username-box">
           <input
             placeholder="Telegram @username kiriting..."

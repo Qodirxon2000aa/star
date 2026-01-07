@@ -1,100 +1,206 @@
+/* premium.css */
+
 .premium-overlay {
-  position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.65);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
 }
 
 .premium-modal {
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  width: 90%;
+  width: 100%;
   max-width: 420px;
   border-radius: 18px;
-  padding: 20px;
+  padding: 18px;
   color: #fff;
   position: relative;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
 }
 
-.animate {
-  animation: slideUp 0.4s ease;
+
+
+.modal-title {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin: 0 0 8px 0;
 }
 
-@keyframes slideUp {
-  from {
-    transform: translateY(40px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+.star {
+  color: #00d4ff;
+  font-size: 28px;
 }
 
-.premium-close {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: none;
-  border: none;
+.modal-subtitle {
+  text-align: center;
+  color: #aaa;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 18px;
+  margin: 24px 0 12px 0;
+}
+
+.best-discount {
+  background: #00aaff;
   color: #fff;
-  font-size: 20px;
-  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 14px;
+  float: right;
 }
 
-.premium-input {
-  width: 100%;
-  padding: 12px;
-  margin: 12px 0;
-  border-radius: 10px;
-  border: none;
-  outline: none;
-  font-size: 15px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #fff;
-}
-
-.premium-plans {
+.username-wrapper {
   display: flex;
   gap: 10px;
-  margin-top: 10px;
+  background: #1c1c1e;
+  border-radius: 18px;
+  padding: 12px;
+  margin-bottom: 10px;
 }
 
-.premium-card {
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6e00ff, #00d4ff);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+  margin-right: 12px;
+}
+
+.username-input {
   flex: 1;
-  background: rgba(255,255,255,0.08);
-  border-radius: 12px;
-  padding: 10px;
-  text-align: center;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  outline: none;
+}
+
+.self-btn {
+  background: none;
+  border: none;
+  color: #00aaff;
+  font-size: 14px;
   cursor: pointer;
-  transition: 0.3s;
+  margin-right: 12px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.plans-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.plan-card {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s;
   border: 2px solid transparent;
 }
 
-.premium-card img {
-  width: 100%;
-  border-radius: 8px;
-  margin-bottom: 6px;
+.plan-card.selected {
+  border-color: #00d4ff;
+  background: rgba(0, 212, 255, 0.1);
 }
 
-.premium-card.active {
-  border-color: #00ffd5;
-  transform: scale(1.05);
+.radio-circle {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #555;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
 }
 
-.premium-buy-btn {
-  width: 100%;
-  margin-top: 15px;
-  padding: 14px;
-  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-  border: none;
-  border-radius: 12px;
+.radio-inner {
+  width: 12px;
+  height: 12px;
+  background: #00d4ff;
+  border-radius: 50%;
+}
+
+.plan-info {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.duration {
   font-size: 16px;
+}
+
+.discount {
+  background: #00aaff;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.price {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.buy-button {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #00d4ff, #0099ff);
+  border: none;
+  border-radius: 16px;
+  color: #fff;
+  font-size: 18px;
   font-weight: bold;
   cursor: pointer;
-  color: #000
+  margin-top: 24px;
 }
+
+
+.premium-page-container {
+  min-height: 100vh;
+  background: #000;
+  color: #fff;
+  padding: 20px;
+}
+
+.premium-page {
+  max-width: 420px;
+  margin: 0 auto;
+  padding-top: 20px;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 24px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+/* Qolgan stilarni oldingidek qoldiring */
+.modal-title { /* ... */ }
+.modal-subtitle { /* ... */ }
+/* va hokazo */
