@@ -328,38 +328,59 @@ body {
 
 
 
-/* 🔒 GLOBAL SCROLL LOCK */
+/* 🌍 RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ❌ BODY HECH QACHON SCROLL QILMAYDI */
 html,
 body {
   height: 100%;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Modal ochilganda */
-body.modal-open {
-  overflow: hidden !important;
-  touch-action: none;
-}
-
-/* Dashboard scroll bo‘lmasligi uchun */
+/* 📱 DASHBOARD — YAGONA SCROLL MANBA */
 .dashboard {
-  min-height: 100dvh; /* 100vh emas */
-  overflow-y: hidden;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #1A2026;
+  position: relative;
+  padding-bottom: 90px; /* footer uchun */
 }
 
-/* Modal overlay har doim ustida */
+/* 🔒 MODAL OCHILGANDA */
+.dashboard.modal-lock {
+  overflow: hidden;
+}
+
+/* CONTENT */
+.dashboard-content {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* 🧱 MODAL OVERLAY */
 .modal-overlay,
 .profile-overlay,
 .referral-overlay {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.6);
 }
 
-/* Modal ichigina scroll bo‘lsin */
+/* 📦 MODAL CONTENT SCROLL */
 .modal-center,
 .profile-panel,
 .referral-sheet {
-  max-height: 90dvh;
+  max-height: 90vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }

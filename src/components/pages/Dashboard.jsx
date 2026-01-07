@@ -23,25 +23,27 @@ const Dashboard = () => {
     setShowReferralModal(true);
   };
 
-  // 🔒 SCROLL LOCK (MUHIM)
-useEffect(() => {
-  const isAnyModalOpen =
-    openModal === "money" || showReferralModal || showProfile;
+  // 🔒 SCROLL LOCK — FAFAQAT DASHBOARD
+  useEffect(() => {
+    const dashboard = document.querySelector(".dashboard");
+    if (!dashboard) return;
 
-  if (isAnyModalOpen) {
-    document.body.classList.add("modal-open");
-  } else {
-    document.body.classList.remove("modal-open");
-  }
+    const isAnyModalOpen =
+      openModal === "money" || showReferralModal || showProfile;
 
-  return () => {
-    document.body.classList.remove("modal-open");
-  };
-}, [openModal, showReferralModal, showProfile]);
+    if (isAnyModalOpen) {
+      dashboard.classList.add("modal-lock");
+    } else {
+      dashboard.classList.remove("modal-lock");
+    }
 
+    return () => {
+      dashboard.classList.remove("modal-lock");
+    };
+  }, [openModal, showReferralModal, showProfile]);
 
   return (
-    <div className="dashboard" style={{ paddingBottom: "90px" }}>
+    <div className="dashboard">
       <Header
         isPremium={isPremium}
         setIsPremium={setIsPremium}
@@ -52,7 +54,7 @@ useEffect(() => {
         {isPremium ? <Premium /> : <Stars />}
       </div>
 
-      {/* 💰 MONEY MODAL */}
+      {/* 💰 MONEY */}
       {openModal === "money" && (
         <div className="modal-overlay" onClick={() => setOpenModal(null)}>
           <div className="modal-center" onClick={(e) => e.stopPropagation()}>
@@ -61,18 +63,17 @@ useEffect(() => {
         </div>
       )}
 
-      {/* 🤝 REFERRAL MODAL */}
+      {/* 🤝 REFERRAL */}
       <ReferralModal
         isOpen={showReferralModal}
         onClose={() => setShowReferralModal(false)}
       />
 
-      {/* 👤 PROFILE MODAL */}
+      {/* 👤 PROFILE */}
       {showProfile && (
         <Profile onClose={() => setShowProfile(false)} />
       )}
 
-      {/* 👇 FOOTER */}
       <Footer
         activeTab={activeTab}
         setActiveTab={setActiveTab}
