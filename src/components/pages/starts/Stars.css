@@ -89,7 +89,7 @@ input {
 .preset {
   width: 100%;
   background: #2c2c2e;
-  padding: 14px;
+  padding: 8px;
   border-radius: 14px;
   display: flex;
   justify-content: space-between;
