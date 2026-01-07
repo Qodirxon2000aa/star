@@ -1,12 +1,39 @@
-import React from "react";
+import React, { useMemo } from "react";
 import "./profile.css";
 import { useTelegram } from "../../../context/TelegramContext";
 
 const Profile = ({ onClose }) => {
-  const { user, apiUser } = useTelegram();
+  const { user, apiUser, loading } = useTelegram();
 
+  // 🖼 AVATAR – har doim hook chaqiriladi
+  const avatar = useMemo(() => {
+    if (
+      user?.photo_url &&
+      typeof user.photo_url === "string" &&
+      user.photo_url.startsWith("http")
+    ) {
+      return user.photo_url;
+    }
+    return "/avatar.png";
+  }, [user?.photo_url]);
+
+  // 👤 FULL NAME
   const fullName =
-    `${user?.first_name || ""} ${user?.last_name || ""}`.trim() || "Foydalanuvchi";
+    `${user?.first_name || ""} ${user?.last_name || ""}`.trim() ||
+    "Foydalanuvchi";
+
+  // 👤 USERNAME (context formatiga mos)
+  const username = user?.username
+    ? user.username.startsWith("@")
+      ? user.username
+      : `@${user.username}`
+    : "@no_username";
+
+  // 💰 BALANCE
+  const balance = loading ? "..." : Number(apiUser?.balance || 0);
+
+  // ❗ JSX ichida tekshiramiz
+  if (!user) return null;
 
   return (
     <div className="profile-overlay" onClick={onClose}>
@@ -14,30 +41,34 @@ const Profile = ({ onClose }) => {
         className="profile-panel"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* ❌ Close */}
-        <button className="profile-close" onClick={onClose}>×</button>
+        <button className="profile-close" onClick={onClose}>
+          ×
+        </button>
 
-        {/* 👤 AVATAR */}
         <div className="profile-header">
           <img
-            src={user?.photo_url || "/avatar.png"}
+            src={avatar}
             alt="avatar"
             className="profile-avatar"
+            referrerPolicy="no-referrer"
+            onError={(e) => {
+              e.currentTarget.src = "/avatar.png";
+            }}
           />
+
           <h2>{fullName}</h2>
-          <p>{user?.username || "no_username"}</p>
+          <p>{username}</p>
         </div>
 
-        {/* 📋 INFO LIST */}
         <div className="profile-list">
           <div className="profile-item">
             <span>ID</span>
-            <strong>{user?.id}</strong>
+            <strong>{user.id}</strong>
           </div>
 
           <div className="profile-item">
             <span>Balans</span>
-            <strong>{apiUser?.balance || 0} ⭐</strong>
+            <strong>{balance} ⭐</strong>
           </div>
 
           <div className="profile-item">
