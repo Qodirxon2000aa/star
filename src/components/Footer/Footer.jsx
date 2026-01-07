@@ -1,20 +1,20 @@
 import React from "react";
 import "./Footer.css";
 
-const Footer = ({ activeTab, setActiveTab }) => {
+const Footer = ({ activeTab, setActiveTab, onInviteClick }) => {
   return (
     <div className="footer">
       <div className="footer-content">
-        {/* Chap tab */}
+        {/* Chap tab - Taklif qilish */}
         <button
           className={`footer-item ${activeTab === "invite" ? "active" : ""}`}
-          onClick={() => setActiveTab("invite")}
+          onClick={onInviteClick}  // Bu endi ishlaydi
         >
           <div className="footer-icon invite-icon" />
           <span>Taklif qilish</span>
         </button>
 
-        {/* O'rta tab (home/dashboard) */}
+        {/* O'rta tab - Asosiy */}
          <button
           className={`footer-item ${activeTab === "profile" ? "active" : ""}`}
           onClick={() => setActiveTab("profile")}
@@ -23,7 +23,7 @@ const Footer = ({ activeTab, setActiveTab }) => {
           <span>Profil</span>
         </button>
 
-        {/* O'ng tab */}
+        {/* O'ng tab - Profil */}
         <button
           className={`footer-item ${activeTab === "profile" ? "active" : ""}`}
           onClick={() => setActiveTab("profile")}
