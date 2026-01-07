@@ -13,6 +13,9 @@ const Stars = () => {
   const { createOrder, apiUser, user } = useTelegram();
 
   const [username, setUsername] = useState("");
+  const [userInfo, setUserInfo] = useState(null);
+  const [checking, setChecking] = useState(false);
+
   const [amount, setAmount] = useState("");
   const [price, setPrice] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -21,6 +24,7 @@ const Stars = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
+  /* ⭐ PRICE */
   useEffect(() => {
     fetch("https://tezpremium.uz/webapp/settings.php")
       .then((r) => r.json())
@@ -31,20 +35,41 @@ const Stars = () => {
       .catch(() => setLoading(false));
   }, []);
 
-  const totalPrice = amount && price ? amount * price : 0;
-  const balance = apiUser?.balance || 0;
+  /* 👤 USER PREVIEW */
+  useEffect(() => {
+    if (!username || username.length < 4) {
+      setUserInfo(null);
+      return;
+    }
 
+    const clean = username.replace("@", "");
+    setChecking(true);
+
+    fetch(`https://tezpremium.uz/starsapi/user.php?username=@${clean}`)
+      .then((r) => r.json())
+      .then((d) => {
+        d.username ? setUserInfo(d) : setUserInfo(null);
+      })
+      .catch(() => setUserInfo(null))
+      .finally(() => setChecking(false));
+  }, [username]);
+
+  const balance = apiUser?.balance || 0;
+  const totalPrice = amount && price ? amount * price : 0;
+
+  /* 👤 O'ZIMGA */
   const handleSelf = () => {
     if (user?.username) {
       setUsername("@" + user.username.replace("@", ""));
     }
   };
 
+  /* 💳 SUBMIT */
   const handleSubmit = async () => {
     setError("");
     setSuccess(false);
 
-    if (!username) return setError("Username kiriting");
+    if (!userInfo) return setError("Foydalanuvchi topilmadi");
     if (amount < 50 || amount > 10000)
       return setError("50 – 10 000 oralig‘ida bo‘lishi kerak");
     if (balance < totalPrice) return setError("Balans yetarli emas");
@@ -70,28 +95,38 @@ const Stars = () => {
   return (
     <div className="stars-wrapper">
       <div className="stars-card">
-
         <h2 className="stars-title">Telegram Stars ⭐</h2>
-        <p className="stars-subtitle">
-          O‘zingiz yoki do‘stlaringiz uchun Stars yuboring
-        </p>
 
         <div className="stars-balance">
           Balans: <strong>{balance.toLocaleString()} UZS</strong>
         </div>
 
-        {/* USERNAME */}
+        {/* 👤 USERNAME */}
         <label>Kimga yuboramiz?</label>
-        <div className="username-row">
+
+        <div className="username-box">
           <input
-            placeholder="@username"
+            placeholder="Telegram @username kiriting..."
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
           <button onClick={handleSelf}>O‘zimga</button>
         </div>
 
-        {/* AMOUNT */}
+        {/* 👤 PREVIEW */}
+        {checking && <div className="user-loading">🔍 Tekshirilmoqda...</div>}
+
+        {userInfo && (
+          <div className="user-preview">
+            <img src={userInfo.photo} alt="avatar" />
+            <div>
+              <div className="name">{userInfo.name}</div>
+              <div className="username">@{userInfo.username}</div>
+            </div>
+          </div>
+        )}
+
+        {/* ⭐ AMOUNT */}
         <label>Telegram Yulduzlari miqdori</label>
         <input
           type="number"
@@ -99,10 +134,9 @@ const Stars = () => {
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
         />
-
+  <br />
+  <br />
         {/* PRESETS */}
-        <p className="or-text">Yoki to‘plamni tanlang</p>
-
         <div className="preset-list">
           {PRESETS.map((p) => (
             <div
