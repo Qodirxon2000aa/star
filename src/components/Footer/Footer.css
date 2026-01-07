@@ -124,3 +124,57 @@
   mask: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="white"/></svg>') center/cover;
   -webkit-mask: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="white"/></svg>') center/cover;
 }
+
+
+/* ICONLAR */
+.footer-icon {
+  width: 22px;
+  height: 22px;
+  margin-bottom: 4px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* 🧲 Invite */
+.invite-icon {
+  background-image: url("/icons/invite.svg"); /* xohlasang o‘zgartir */
+}
+
+/* ⭐ Soon */
+.soon-icon {
+  background-image: url("/icons/home.svg");
+}
+
+/* 👤 Profile */
+.profile-icon {
+  background-image: url("/icons/user.svg");
+}
+
+/* 🔔 TEZ KUNDA ALERT */
+.soon-alert {
+  position: fixed;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%) scale(0.8);
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: #fff;
+  padding: 12px 22px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  animation: popFade 0.3s ease-out forwards;
+  z-index: 9999;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+@keyframes popFade {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+}

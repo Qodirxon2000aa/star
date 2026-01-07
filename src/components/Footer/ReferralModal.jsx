@@ -1,7 +1,7 @@
 // src/components/ReferralModal.jsx
 import React from "react";
 import "./ReferralModal.css";
-
+import image from "../../../src/assets/share.mp4"
 const ReferralModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
@@ -18,11 +18,19 @@ const ReferralModal = ({ isOpen, onClose }) => {
 
         {/* Kontent */}
         <div className="sheet-content">
-          <img
-            src="https://via.placeholder.com/120" // Duck rasmini o'zingizniki bilan almashtiring
-            alt="Duck"
-            className="duck-img"
-          />
+            <div className="animation">
+                <div className="video">
+                                <video
+  src={image}
+  className="duck-video"
+  autoPlay
+  loop
+  muted
+  playsInline
+/>
+                </div>
+                    
+            </div>
 
           <h2>Referral dasturi</h2>
           <p>
@@ -55,9 +63,7 @@ const ReferralModal = ({ isOpen, onClose }) => {
             <button className="btn-invite">
               Do‘stlarni taklif qilish
             </button>
-            <button className="btn-link">
-              Shaxsiy havolani olish
-            </button>
+            
           </div>
         </div>
       </div>

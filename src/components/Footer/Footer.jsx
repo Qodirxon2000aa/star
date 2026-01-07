@@ -1,38 +1,56 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Footer.css";
 
 const Footer = ({ activeTab, setActiveTab, onInviteClick }) => {
+  const [showSoon, setShowSoon] = useState(false);
+
+  const handleSoon = () => {
+    setShowSoon(true);
+    setTimeout(() => setShowSoon(false), 2000); // 2 soniyada yopiladi
+  };
+
   return (
-    <div className="footer">
-      <div className="footer-content">
-        {/* Chap tab - Taklif qilish */}
-        <button
-          className={`footer-item ${activeTab === "invite" ? "active" : ""}`}
-          onClick={onInviteClick}  // Bu endi ishlaydi
-        >
-          <div className="footer-icon invite-icon" />
-          <span>Taklif qilish</span>
-        </button>
+    <>
+      <div className="footer">
+        <div className="footer-content">
 
-        {/* O'rta tab - Asosiy */}
-         <button
-          className={`footer-item ${activeTab === "profile" ? "active" : ""}`}
-          onClick={() => setActiveTab("profile")}
-        >
-          <div className="footer-icon profile-icon" />
-          <span>Profil</span>
-        </button>
+          {/* 🔗 Taklif qilish */}
+          <button
+            className={`footer-item ${activeTab === "invite" ? "active" : ""}`}
+            onClick={onInviteClick}
+          >
+            <div className="footer-icon invite-icon" />
+            <span>Taklif qilish</span>
+          </button>
 
-        {/* O'ng tab - Profil */}
-        <button
-          className={`footer-item ${activeTab === "profile" ? "active" : ""}`}
-          onClick={() => setActiveTab("profile")}
-        >
-          <div className="footer-icon profile-icon" />
-          <span>Profil</span>
-        </button>
+          {/* ⭐ Asosiy (Tez kunda) */}
+          <button
+            className="footer-item"
+            onClick={handleSoon}
+          >
+            <div className="footer-icon soon-icon" />
+            <span>Asosiy</span>
+          </button>
+
+          {/* 👤 Profil */}
+          <button
+            className={`footer-item ${activeTab === "profile" ? "active" : ""}`}
+            onClick={() => setActiveTab("profile")}
+          >
+            <div className="footer-icon profile-icon" />
+            <span>Profil</span>
+          </button>
+
+        </div>
       </div>
-    </div>
+
+      {/* 🔔 Animatsiyali alert */}
+      {showSoon && (
+        <div className="soon-alert">
+          🚀 Tez kunda
+        </div>
+      )}
+    </>
   );
 };
 

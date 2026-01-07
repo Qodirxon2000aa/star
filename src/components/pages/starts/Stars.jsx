@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useTelegram } from "../../../../context/TelegramContext";
 import "./Stars.css";
 
+// ❗ VIDEO PATH (o‘zing qo‘yasan)
+import starsVideo from "../../../assets/Telegram.mov"; // ⬅️ shu joyni keyin almashtirasan
+
 const PRESETS = [
   { stars: 50, price: "12 999" },
   { stars: 100, price: "25 999" },
@@ -95,13 +98,29 @@ const Stars = () => {
   return (
     <div className="stars-wrapper">
       <div className="stars-card">
+
+        {/* 🎬 VIDEO (TITLE TEPASIDA) */}
+        <div className="vd">
+            <div className="stars-video">
+          <video
+            src={starsVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+          />
+        </div>
+        </div>
+      
+
         <h2 className="stars-title">Telegram Stars ⭐</h2>
 
-   
-      <br />
+        <br />
+
         {/* 👤 USERNAME */}
         <label>Kimga yuboramiz?</label>
-    <br /> <br />
+        <br /><br />
+
         <div className="username-box">
           <input
             placeholder="Telegram @username kiriting..."
@@ -111,7 +130,6 @@ const Stars = () => {
           <button onClick={handleSelf}>O‘zimga</button>
         </div>
 
-        {/* 👤 PREVIEW */}
         {checking && <div className="user-loading">🔍 Tekshirilmoqda...</div>}
 
         {userInfo && (
@@ -132,16 +150,14 @@ const Stars = () => {
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
         />
-  <br />
-  <br />
-        {/* PRESETS */}
+
+        <br /><br />
+
         <div className="preset-list">
           {PRESETS.map((p) => (
             <div
               key={p.stars}
-              className={`preset ${
-                Number(amount) === p.stars ? "active" : ""
-              }`}
+              className={`preset ${Number(amount) === p.stars ? "active" : ""}`}
               onClick={() => setAmount(p.stars)}
             >
               ⭐ {p.stars} Stars
@@ -150,7 +166,6 @@ const Stars = () => {
           ))}
         </div>
 
-        {/* TOTAL */}
         <div className="total">
           Jami: <strong>{totalPrice.toLocaleString()} UZS</strong>
         </div>
@@ -158,11 +173,7 @@ const Stars = () => {
         {error && <div className="error">{error}</div>}
         {success && <div className="success">✅ Muvaffaqiyatli!</div>}
 
-        <button
-          className="buy-btn"
-          disabled={sending}
-          onClick={handleSubmit}
-        >
+        <button className="buy-btn" disabled={sending} onClick={handleSubmit}>
           {sending ? "Yuborilmoqda..." : "⭐ Sotib olish"}
         </button>
       </div>

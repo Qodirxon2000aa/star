@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useTelegram } from "../../../../context/TelegramContext";
 import "./premium.css";
 
+// ❗ VIDEO PATH (keyin o‘zing almashtirasan)
+import premiumVideo from "../../../assets/prem.mp4";
+
 const PremiumModal = ({ onClose }) => {
   const { createPremiumOrder, apiUser, user } = useTelegram();
 
@@ -9,7 +12,7 @@ const PremiumModal = ({ onClose }) => {
   const [userInfo, setUserInfo] = useState(null);
   const [checking, setChecking] = useState(false);
 
-  const [selectedPlan, setSelectedPlan] = useState("3"); // default 3 oy
+  const [selectedPlan, setSelectedPlan] = useState("3");
   const [sending, setSending] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
@@ -24,7 +27,7 @@ const PremiumModal = ({ onClose }) => {
     { id: "12", months: 12, discount: "-42%", price: 389999000 },
   ];
 
-  /* 👤 USER PREVIEW – Stars.jsx dagidek qidiruv */
+  /* 👤 USER PREVIEW */
   useEffect(() => {
     if (!username || username.length < 4) {
       setUserInfo(null);
@@ -37,11 +40,7 @@ const PremiumModal = ({ onClose }) => {
     fetch(`https://tezpremium.uz/starsapi/user.php?username=@${clean}`)
       .then((r) => r.json())
       .then((d) => {
-        if (d.username) {
-          setUserInfo(d);
-        } else {
-          setUserInfo(null);
-        }
+        d.username ? setUserInfo(d) : setUserInfo(null);
       })
       .catch(() => setUserInfo(null))
       .finally(() => setChecking(false));
@@ -65,10 +64,6 @@ const PremiumModal = ({ onClose }) => {
       setValidationError("Foydalanuvchi topilmadi");
       return;
     }
-    if (!selectedPlan) {
-      setValidationError("Premium paket tanlang");
-      return;
-    }
 
     const userBalance = Number(apiUser?.balance || 0);
     if (userBalance < totalPrice) {
@@ -84,12 +79,8 @@ const PremiumModal = ({ onClose }) => {
         overall: totalPrice,
       });
 
-      if (result.ok) {
-        setSuccess(true);
-      } else {
-        setError("Xatolik yuz berdi");
-      }
-    } catch (err) {
+      result.ok ? setSuccess(true) : setError("Xatolik yuz berdi");
+    } catch {
       setError("Server xatosi");
     } finally {
       setSending(false);
@@ -99,17 +90,28 @@ const PremiumModal = ({ onClose }) => {
   return (
     <div className="premium-overlay" onClick={onClose}>
       <div className="premium-modal animate" onClick={(e) => e.stopPropagation()}>
-        {/* Asosiy forma */}
+          <div className="vd">
+ <div className="premium-video">
+          <video
+            src={premiumVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+          />
+        </div>
+          </div>
+    
+       
+
         {!sending && !success && !error && !insufficientFunds && (
           <>
             <h1 className="modal-title">
-              Telegram Premium  <span className="star">⭐</span>
+              Telegram Premium <span className="star">⭐</span>
             </h1>
-           
 
             <div className="section-title">Kimga yuboramiz?</div>
 
-            {/* Username input + O'zimga tugmasi */}
             <div className="username-box">
               <input
                 type="text"
@@ -120,10 +122,8 @@ const PremiumModal = ({ onClose }) => {
               <button onClick={handleSelfClick}>O‘zimga</button>
             </div>
 
-            {/* Tekshirilmoqda... */}
             {checking && <div className="user-loading">🔍 Tekshirilmoqda...</div>}
 
-            {/* User topilganda preview – Stars.jsx dagidek */}
             {userInfo && (
               <div className="user-preview">
                 <img src={userInfo.photo} alt="avatar" />
@@ -134,23 +134,29 @@ const PremiumModal = ({ onClose }) => {
               </div>
             )}
 
-            <div className="section-title">
-              Muddatni tanlang 
-            </div>
+            <div className="section-title">Muddatni tanlang</div>
 
             <div className="plans-list">
               {plans.map((plan) => (
                 <div
                   key={plan.id}
-                  className={`plan-card ${selectedPlan === plan.id ? "selected" : ""}`}
+                  className={`plan-card ${
+                    selectedPlan === plan.id ? "selected" : ""
+                  }`}
                   onClick={() => setSelectedPlan(plan.id)}
                 >
                   <div className="radio-circle">
-                    {selectedPlan === plan.id && <div className="radio-inner"></div>}
+                    {selectedPlan === plan.id && (
+                      <div className="radio-inner"></div>
+                    )}
                   </div>
                   <div className="plan-info">
                     <span className="duration">
-                      {plan.months === 12 ? "1 yil" : plan.months === 3 ? "3 oy" : "6 oy"}
+                      {plan.months === 12
+                        ? "1 yil"
+                        : plan.months === 6
+                        ? "6 oy"
+                        : "3 oy"}
                     </span>
                     <span className="discount">{plan.discount}</span>
                   </div>
@@ -161,9 +167,10 @@ const PremiumModal = ({ onClose }) => {
               ))}
             </div>
 
-            {/* Xatolik yoki yetarli mablag' yo'qligi */}
             {validationError && <div className="error">{validationError}</div>}
-            {insufficientFunds && <div className="error">Balans yetarli emas</div>}
+            {insufficientFunds && (
+              <div className="error">Balans yetarli emas</div>
+            )}
             {error && <div className="error">{error}</div>}
             {success && <div className="success">✅ Muvaffaqiyatli!</div>}
 

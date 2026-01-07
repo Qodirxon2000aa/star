@@ -8,7 +8,6 @@
   width: 100%;
   max-width: 420px;
   border-radius: 20px;
-  padding: 20px;
   color: #fff;
 }
 
@@ -231,3 +230,27 @@ input {
   border: 1px solid #444;
 }
 
+
+
+/* 🎬 STARS VIDEO */
+
+.vd{
+  width: 100%;
+    display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.stars-video {
+  width: 200px;
+  height: 200px;
+  border-radius: 18px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  background: #000;
+}
+
+.stars-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
