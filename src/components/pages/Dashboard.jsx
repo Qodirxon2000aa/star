@@ -8,6 +8,7 @@ import Stars from "../pages/starts/Stars.jsx";
 import Footer from "../Footer/Footer.jsx";
 import ReferralModal from "../Footer/ReferralModal.jsx";
 import Money from "../../components/pages/Money/Money.jsx";
+import Profile from "../../components/Footer/Profile.jsx";
 
 const Dashboard = () => {
   const [isPremium, setIsPremium] = useState(false);
@@ -15,6 +16,7 @@ const Dashboard = () => {
 
   const [activeTab, setActiveTab] = useState("home");
   const [showReferralModal, setShowReferralModal] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
 
   const handleInviteClick = () => {
     setActiveTab("invite");
@@ -23,7 +25,6 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard" style={{ paddingBottom: "90px" }}>
-      
       <Header
         isPremium={isPremium}
         setIsPremium={setIsPremium}
@@ -49,11 +50,17 @@ const Dashboard = () => {
         onClose={() => setShowReferralModal(false)}
       />
 
+      {/* 👤 PROFILE MODAL */}
+      {showProfile && (
+        <Profile onClose={() => setShowProfile(false)} />
+      )}
+
       {/* 👇 FOOTER */}
       <Footer
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onInviteClick={handleInviteClick}
+        onProfileClick={() => setShowProfile(true)}
       />
     </div>
   );

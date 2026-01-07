@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import "./Footer.css";
 
-const Footer = ({ activeTab, setActiveTab, onInviteClick }) => {
+const Footer = ({ activeTab, setActiveTab, onInviteClick, onProfileClick }) => {
   const [showSoon, setShowSoon] = useState(false);
 
   const handleSoon = () => {
     setShowSoon(true);
-    setTimeout(() => setShowSoon(false), 2000); // 2 soniyada yopiladi
+    setTimeout(() => setShowSoon(false), 2000);
   };
 
   return (
@@ -23,11 +23,8 @@ const Footer = ({ activeTab, setActiveTab, onInviteClick }) => {
             <span>Taklif qilish</span>
           </button>
 
-          {/* ⭐ Asosiy (Tez kunda) */}
-          <button
-            className="footer-item"
-            onClick={handleSoon}
-          >
+          {/* ⭐ Asosiy */}
+          <button className="footer-item" onClick={handleSoon}>
             <div className="footer-icon soon-icon" />
             <span>Asosiy</span>
           </button>
@@ -35,7 +32,7 @@ const Footer = ({ activeTab, setActiveTab, onInviteClick }) => {
           {/* 👤 Profil */}
           <button
             className={`footer-item ${activeTab === "profile" ? "active" : ""}`}
-            onClick={() => setActiveTab("profile")}
+            onClick={onProfileClick}
           >
             <div className="footer-icon profile-icon" />
             <span>Profil</span>
@@ -44,7 +41,6 @@ const Footer = ({ activeTab, setActiveTab, onInviteClick }) => {
         </div>
       </div>
 
-      {/* 🔔 Animatsiyali alert */}
       {showSoon && (
         <div className="soon-alert">
           🚀 Tez kunda
