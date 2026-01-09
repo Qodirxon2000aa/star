@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import "./Money.css";
 import { useTelegram } from "../../../../context/TelegramContext";
+import MoneyImage from "../../../assets/money.json"; // Lottie JSON fayl
+import Lottie from "lottie-react"; // Muhim: lottie-react dan import
 
 const Money = ({ onClose }) => {
   const { user, refreshUser } = useTelegram();
@@ -59,7 +61,7 @@ const Money = ({ onClose }) => {
     setIsClosing(true);
     setTimeout(() => {
       onClose();
-    }, 350); // fade-out animatsiya davomiyligi
+    }, 350);
   };
 
   // Muvaffaqiyatli to'lov
@@ -162,15 +164,18 @@ const Money = ({ onClose }) => {
       }
     }, 5000);
 
-    // 10 daqiqadan keyin to'xtatish
     setTimeout(() => clearInterval(interval), 600000);
   };
 
   // Nusxa olish
   const copyToClipboard = (text, label = "Ma'lumot") => {
-    navigator.clipboard.writeText(text);
-    setToast(`${label} nusxalandi ✓`);
-    setTimeout(() => setToast(""), 2500);
+    navigator.clipboard.writeText(text).then(() => {
+      setToast(`${label} nusxalandi ✓`);
+      setTimeout(() => setToast(""), 2500);
+    }).catch(() => {
+      setToast("Nusxalashda xatolik");
+      setTimeout(() => setToast(""), 2500);
+    });
   };
 
   return (
@@ -182,6 +187,15 @@ const Money = ({ onClose }) => {
         <button className="money-close-btn" onClick={handleClose}>
           ×
         </button>
+
+        <div className="animation">
+          <Lottie
+            animationData={MoneyImage}
+            loop={true}
+            autoplay={true}
+            style={{ width: 200, height: 200 }} // kerak bo'lsa o'lcham berish
+          />
+        </div>
 
         <h2 className="money-title">Hisobni to'ldirish</h2>
 
