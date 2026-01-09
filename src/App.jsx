@@ -5,11 +5,12 @@ import { TelegramProvider } from "../context/TelegramContext";
 import { PreloadProvider, usePreload } from "../context/PreloadContext";
 import WelcomeAnimation from "./components/WelcomeAnimation";
 import YandexTracker from "./../YandexTracker";
+import { SpeedInsights } from "@vercel/speed-insights/react"; // ✅ TO‘G‘RI IMPORT
 
 const AppContent = () => {
   const { ready } = usePreload();
 
-  // 🔥 TAYYOR BO‘LMAGUNCHA ROUTER HAM YO‘Q
+  // 🔥 PRELOAD TUGAMAGUNCHA HECH NIMA YO‘Q
   if (!ready) return <WelcomeAnimation />;
 
   return (
@@ -21,6 +22,9 @@ const AppContent = () => {
         <Route path="/gifts" element={<Gifts />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
+
+      {/* ixtiyoriy */}
+      <SpeedInsights />
     </Router>
   );
 };
