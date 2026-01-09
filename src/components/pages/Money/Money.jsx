@@ -1,62 +1,50 @@
-// pages/Money.jsx - TO'LIQ FINAL VERSIYA
+// pages/Money.jsx - TO'LIQ TUZATILGAN FINAL VERSIYA
 import React, { useState, useEffect } from "react";
 import "./Money.css";
 import { useTelegram } from "../../../../context/TelegramContext";
 
 const Money = ({ onClose }) => {
   const { user, refreshUser } = useTelegram();
-  const [amount, setAmount] = useState(""); // foydalanuvchi kiritgan summa (formatlangan)
-  const [rawAmount, setRawAmount] = useState(""); // faqat raqamlar (nusxa olish uchun)
+  const [amount, setAmount] = useState(""); // formatlangan ko'rinish
+  const [rawAmount, setRawAmount] = useState(""); // faqat raqamlar
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [waiting, setWaiting] = useState(false);
   const [paymentId, setPaymentId] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
   const [toast, setToast] = useState("");
-  
+  const [isClosing, setIsClosing] = useState(false);
   const [timeLeft, setTimeLeft] = useState(600);
   const [cardInfo, setCardInfo] = useState(null);
-
-  // Natija animatsiyasi
   const [showResult, setShowResult] = useState(false);
   const [resultType, setResultType] = useState("");
-  
-  // Pay status tekshiruvi
   const [payStatus, setPayStatus] = useState(null);
   const [showPaymentDisabled, setShowPaymentDisabled] = useState(false);
 
-  // Pay status tekshirish - Har 5 sekundda
+  // Pay statusni tekshirish (har 5 sekundda)
   useEffect(() => {
     const checkPayStatus = async () => {
       try {
         const res = await fetch("https://tezpremium.uz/webapp/settings.php");
         const data = await res.json();
-        const status = data.settings?.pay_status || "off";
-        console.log("Pay status:", status);
-        setPayStatus(status);
+        setPayStatus(data.settings?.pay_status || "off");
       } catch (err) {
         console.error("Pay status tekshirishda xatolik:", err);
         setPayStatus("off");
       }
     };
-    
-    // Darhol tekshirish
+
     checkPayStatus();
-    
-    // Har 5 sekundda tekshirish
     const interval = setInterval(checkPayStatus, 5000);
-    
     return () => clearInterval(interval);
   }, []);
 
   // Taymer
   useEffect(() => {
     if (waiting && timeLeft > 0) {
-      const timer = setTimeout(() => {
-        setTimeLeft(timeLeft - 1);
-      }, 1000);
+      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
     } else if (timeLeft === 0 && waiting) {
-      handlePaymentError("Vaqt tugadi");
+      handlePaymentError("Vaqt tugadi ⏰");
     }
   }, [waiting, timeLeft]);
 
@@ -66,7 +54,15 @@ const Money = ({ onClose }) => {
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
-  // Muvaffaqiyat
+  // Modalni animatsiya bilan yopish
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+    }, 350); // fade-out animatsiya davomiyligi
+  };
+
+  // Muvaffaqiyatli to'lov
   const handlePaymentSuccess = async () => {
     setResultType("success");
     setShowResult(true);
@@ -77,11 +73,11 @@ const Money = ({ onClose }) => {
       setWaiting(false);
       setPaymentId(null);
       setCardInfo(null);
-      onClose();
+      handleClose();
     }, 2500);
   };
 
-  // Xato
+  // Xato holati
   const handlePaymentError = (msg = "To'lov bekor qilindi yoki muvaffaqiyatsiz") => {
     setResultType("error");
     setShowResult(true);
@@ -95,18 +91,16 @@ const Money = ({ onClose }) => {
     }, 2500);
   };
 
+  // To'lov yaratish
   const handleSubmit = async () => {
     setErrorMsg("");
-    
-    // Pay status tekshiruvi
+
     if (payStatus === "off") {
       setShowPaymentDisabled(true);
-      setTimeout(() => {
-        setShowPaymentDisabled(false);
-      }, 3000);
+      setTimeout(() => setShowPaymentDisabled(false), 3000);
       return;
     }
-    
+
     const numAmount = parseInt(rawAmount, 10);
     if (!numAmount || numAmount < 1000 || numAmount > 10000000) {
       setErrorMsg("Summa 1 000 — 10 000 000 UZS oralig'ida bo'lishi kerak");
@@ -121,13 +115,12 @@ const Money = ({ onClose }) => {
     setIsSubmitting(true);
     try {
       const actualUserId = user.isTelegram ? user.id : "7521806735";
-      const targetUrl = `https://m4746.myxvest.ru/webapp/payments/review.php?user_id=${actualUserId}&amount=${numAmount}`;
+      const res = await fetch(
+        `https://m4746.myxvest.ru/webapp/payments/review.php?user_id=${actualUserId}&amount=${numAmount}`
+      );
 
-      const res = await fetch(targetUrl, { method: "GET", headers: { Accept: "application/json" } });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
       const data = await res.json();
-      console.log("Review response:", data);
 
       if (data.ok && data.payment_id) {
         setPaymentId(data.payment_id);
@@ -146,25 +139,16 @@ const Money = ({ onClose }) => {
     }
   };
 
+  // To'lov holatini polling orqali tekshirish
   const checkPaymentStatus = (pid) => {
-    console.log(`[Payment Check] Boshlandi: payment_id = ${pid}`);
-
     const interval = setInterval(async () => {
       try {
-        console.log(`[Payment Check] Tekshirilmoqda... (payment_id: ${pid})`);
-
         const res = await fetch(
-          `https://m4746.myxvest.ru/webapp/payments/status.php?payment_id=${pid}`,
-          { method: "GET", headers: { Accept: "application/json" } }
+          `https://m4746.myxvest.ru/webapp/payments/status.php?payment_id=${pid}`
         );
 
-        if (!res.ok) {
-          console.warn(`[Payment Check] HTTP xatosi: ${res.status}`);
-          return;
-        }
-
+        if (!res.ok) return;
         const data = await res.json();
-        console.log("[Payment Check] Javob:", data);
 
         if (data.ok && data.status === "paid") {
           clearInterval(interval);
@@ -174,27 +158,30 @@ const Money = ({ onClose }) => {
           handlePaymentError("To'lov bekor qilindi yoki muvaffaqiyatsiz");
         }
       } catch (err) {
-        console.error("[Payment Check] Xatolik:", err);
+        console.error("Status check error:", err);
       }
     }, 5000);
 
-    setTimeout(() => {
-      clearInterval(interval);
-      console.log("[Payment Check] 10 daqiqa o'tdi — to'xtatildi");
-    }, 600000);
+    // 10 daqiqadan keyin to'xtatish
+    setTimeout(() => clearInterval(interval), 600000);
   };
 
-  // Nusxa olish (umumiy funksiya)
+  // Nusxa olish
   const copyToClipboard = (text, label = "Ma'lumot") => {
     navigator.clipboard.writeText(text);
-    setToast(` ${label} nusxalandi`);
+    setToast(`${label} nusxalandi ✓`);
     setTimeout(() => setToast(""), 2500);
   };
 
   return (
-    <div className="money-modal-overlay" onClick={onClose}>
+    <div
+      className={`money-modal-overlay ${isClosing ? "fade-out" : ""}`}
+      onClick={handleClose}
+    >
       <div className="money-modal" onClick={(e) => e.stopPropagation()}>
-        <button className="money-close-btn" onClick={onClose}>×</button>
+        <button className="money-close-btn" onClick={handleClose}>
+          ×
+        </button>
 
         <h2 className="money-title">Hisobni to'ldirish</h2>
 
@@ -204,7 +191,8 @@ const Money = ({ onClose }) => {
           <>
             <div className="money-method">
               <label>To'lov turi</label>
-              <br /> <br />
+              <br />
+              <br />
               <div className="method-selected">Karta orqali</div>
             </div>
 
@@ -220,7 +208,8 @@ const Money = ({ onClose }) => {
                   setAmount(val ? parseInt(val, 10).toLocaleString("ru-RU") : "");
                 }}
               />
-              <br /> <br />
+              <br />
+              <br />
               <div className="money-limits">
                 Min: 1 000 UZS • Max: 10 000 000 UZS
               </div>
@@ -239,10 +228,9 @@ const Money = ({ onClose }) => {
             <div className="waiting-spinner"></div>
             <h3>To'lovni yakunlang</h3>
             <p>Kartangizdan to'lovni amalga oshiring</p>
-              <p>Belgilangan tolovdan 1 so’m ko’p ham kam ham tashlamang!</p>
+            <p>Belgilangan tolovdan 1 so’m ko’p ham kam ham tashlamang!</p>
             <br />
 
-            {/* To'lov summasi ko'rsatish va copy qilish */}
             <div className="payment-amount-display">
               <div className="amount-info">
                 <div className="amount-label">To'lov summasi</div>
@@ -257,7 +245,6 @@ const Money = ({ onClose }) => {
             </div>
             <br />
 
-            {/* Karta ma'lumotlari */}
             {cardInfo && (
               <div className="card-details">
                 <div className="card-info">
@@ -280,10 +267,11 @@ const Money = ({ onClose }) => {
               </div>
             )}
 
-            {/* Taymer */}
             <div className="deadline timer-active">
               <span className="clock-icon">⏰</span>
-              <span>Qolgan vaqt: <strong className="timer-countdown">{formatTime(timeLeft)}</strong></span>
+              <span>
+                Qolgan vaqt: <strong className="timer-countdown">{formatTime(timeLeft)}</strong>
+              </span>
             </div>
 
             <p className="waiting-note">
@@ -293,7 +281,7 @@ const Money = ({ onClose }) => {
           </div>
         )}
 
-        {/* Animatsiyali natija */}
+        {/* Natija animatsiyasi */}
         {showResult && (
           <div className={`payment-result-overlay ${resultType}`}>
             <div className="result-icon">
@@ -304,22 +292,22 @@ const Money = ({ onClose }) => {
             </div>
           </div>
         )}
-      </div>
 
-      {/* Toast */}
-      {toast && <div className="toast-notification">{toast}</div>}
-      
-      {/* To'lov o'chirilgan xabari */}
-      {showPaymentDisabled && (
-        <div className="payment-disabled-overlay">
-          <div className="payment-disabled-modal">
-            <div className="disabled-icon">🚫</div>
-            <h3>To'lov vaqtincha o'chirilgan</h3>
-            <p>Hozirda web appdan to'lov qilish imkoni yo'q.</p>
-            <p className="bot-text">📱 Bot orqali to'lov amalga oshiring</p>
+        {/* Toast */}
+        {toast && <div className="toast-notification">{toast}</div>}
+
+        {/* To'lov o'chirilgan holat */}
+        {showPaymentDisabled && (
+          <div className="payment-disabled-overlay">
+            <div className="payment-disabled-modal">
+              <div className="disabled-icon">🚫</div>
+              <h3>To'lov vaqtincha o'chirilgan</h3>
+              <p>Hozirda web appdan to'lov qilish imkoni yo'q.</p>
+              <p className="bot-text">📱 Bot orqali to'lov amalga oshiring</p>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
