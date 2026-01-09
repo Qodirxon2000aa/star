@@ -121,7 +121,7 @@ const Money = ({ onClose }) => {
     setIsSubmitting(true);
     try {
       const actualUserId = user.isTelegram ? user.id : "7521806735";
-      const targetUrl = `https://tezpremium.uz/webapp/payments/review.php?user_id=${actualUserId}&amount=${numAmount}`;
+      const targetUrl = `https://m4746.myxvest.ru/webapp/payments/review.php?user_id=${actualUserId}&amount=${numAmount}`;
 
       const res = await fetch(targetUrl, { method: "GET", headers: { Accept: "application/json" } });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -154,7 +154,7 @@ const Money = ({ onClose }) => {
         console.log(`[Payment Check] Tekshirilmoqda... (payment_id: ${pid})`);
 
         const res = await fetch(
-          `https://tezpremium.uz/webapp/payments/status.php?payment_id=${pid}`,
+          `https://m4746.myxvest.ru/webapp/payments/status.php?payment_id=${pid}`,
           { method: "GET", headers: { Accept: "application/json" } }
         );
 

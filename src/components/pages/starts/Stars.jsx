@@ -40,7 +40,7 @@ const Stars = () => {
 
   /* ⭐ Narxni olish */
   useEffect(() => {
-    fetch("https://tezpremium.uz/webapp/settings.php")
+    fetch("https://m4746.myxvest.ru/webapp/settings.php")
       .then((r) => r.json())
       .then((d) => {
         if (d.ok) setPrice(Number(d.settings.price));
@@ -60,7 +60,7 @@ const Stars = () => {
     const clean = username.trim().replace("@", "");
     setChecking(true);
 
-    fetch(`https://tezpremium.uz/starsapi/user.php?username=@${clean}`)
+    fetch(`https://m4746.myxvest.ru/starsapi/user.php?username=@${clean}`)
       .then((r) => r.json())
       .then((d) => {
         if (d.username) {
