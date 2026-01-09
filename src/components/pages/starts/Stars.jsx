@@ -60,7 +60,7 @@ const Stars = () => {
     const clean = username.trim().replace("@", "");
     setChecking(true);
 
-    fetch(`https://m4746.myxvest.ru/starsapi/user.php?username=@${clean}`)
+    fetch(`https://tezpremium.uz/starsapi/user.php?username=@${clean}`)
       .then((r) => r.json())
       .then((d) => {
         if (d.username) {

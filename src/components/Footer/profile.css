@@ -198,3 +198,52 @@
   transform: scale(1.03);
   box-shadow: 0 8px 20px rgba(106, 90, 249, 0.4);
 }
+
+
+@media (max-width: 420px) {
+  .profile-header h2 {
+    font-size: 19px;
+  }
+
+  .profile-header p {
+    font-size: 13px;
+  }
+
+  .profile-item {
+    font-size: 14px;
+  }
+
+  .profile-history-btn {
+    font-size: 14px;
+  }
+
+  .profile-avatar {
+    width: 84px;
+    height: 84px;
+  }
+}
+
+/* 🔹 JUDA KICHIK EKRAN (≤ 360px) */
+@media (max-width: 360px) {
+  .profile-header h2 {
+    font-size: 17px;
+  }
+
+  .profile-header p {
+    font-size: 12px;
+  }
+
+  .profile-item {
+    font-size: 13px;
+  }
+
+  .profile-history-btn {
+    font-size: 13px;
+    padding: 12px;
+  }
+
+  .profile-avatar {
+    width: 72px;
+    height: 72px;
+  }
+}
