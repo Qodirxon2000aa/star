@@ -10,6 +10,9 @@ import ReferralModal from "../Footer/ReferralModal.jsx";
 import Money from "../../components/pages/Money/Money.jsx";
 import Profile from "../../components/Footer/Profile.jsx";
 
+// 🔥 WELCOME VIDEO
+import WelcomeAnimation from "../WelcomeAnimation.jsx";
+
 const Dashboard = () => {
   const [isPremium, setIsPremium] = useState(false);
   const [openModal, setOpenModal] = useState(null);
@@ -17,6 +20,9 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("home");
   const [showReferralModal, setShowReferralModal] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+
+  // 🔥 INTRO STATE
+  const [showIntro, setShowIntro] = useState(true);
 
   const handleInviteClick = () => {
     setActiveTab("invite");
@@ -41,6 +47,11 @@ const Dashboard = () => {
       dashboard.classList.remove("modal-lock");
     };
   }, [openModal, showReferralModal, showProfile]);
+
+  // 🔥 AGAR INTRO BO‘LSA — FAQAT VIDEO
+  if (showIntro) {
+    return <WelcomeAnimation onFinish={() => setShowIntro(false)} />;
+  }
 
   return (
     <div className="dashboard">

@@ -2,6 +2,7 @@
 
 .header {
   padding: 10px 0;
+  width: 100%;
 }
 
 .top-bar {
@@ -11,13 +12,15 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px; /* 🔧 zich joylashuv xatosi tuzatildi */
+  box-sizing: border-box;
 }
 
 /* ================= GLOBE ================= */
 
 .globe-icon {
-  width: 44px;
-  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: 50%;
   background: rgba(128, 0, 255, 0.25);
   display: flex;
@@ -25,6 +28,7 @@
   justify-content: center;
   cursor: pointer;
   transition: transform 0.25s ease, background 0.25s ease;
+  flex-shrink: 0; /* 🔧 siqilib ketmasin */
 }
 
 .globe-icon:hover {
@@ -43,6 +47,7 @@
   backdrop-filter: blur(12px);
   position: relative;
   user-select: none;
+  box-sizing: border-box;
 }
 
 .switch-track {
@@ -53,15 +58,17 @@
   justify-content: space-between;
   padding: 0 16px;
   position: relative;
+  box-sizing: border-box;
 }
 
 .switch-label {
   font-size: 15px;
   font-weight: 600;
-  color: rgba(255,255,255,0.55);
+  color: rgba(255, 255, 255, 0.55);
   z-index: 2;
   cursor: pointer;
   transition: color 0.25s ease;
+  white-space: nowrap; /* 🔧 text sakramasin */
 }
 
 .switch-label.active {
@@ -81,14 +88,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
-  /* 🔥 SILLIQLIK */
   transition:
     transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-
   box-shadow: 0 6px 16px rgba(0,0,0,0.25);
   z-index: 1;
+  will-change: transform; /* 🔧 animatsiya silliq */
 }
 
 .switch-thumb.right {
@@ -111,9 +116,10 @@
   backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   cursor: pointer;
   transition: transform 0.25s ease, background 0.25s ease;
+  flex-shrink: 0; /* 🔧 qisilib ketmasin */
 }
 
 .balance-plus-btn:hover {
@@ -139,4 +145,42 @@
   color: #fff;
   font-size: 20px;
   font-weight: bold;
+}
+
+/* ================= 📱 MEDIA QUERIES ================= */
+
+/* 🔹 KICHIK TELEFONLAR */
+@media (max-width: 380px) {
+  .toggle-switch {
+    width: 160px;
+  }
+
+  .switch-label {
+    font-size: 13px;
+  }
+
+  .balance-text {
+    font-size: 14px;
+  }
+
+  .plus-icon {
+    width: 24px;
+    height: 24px;
+    font-size: 18px;
+  }
+}
+
+/* 🔹 JUDA TOR EKRAN */
+@media (max-width: 340px) {
+  .top-bar {
+    gap: 6px;
+  }
+
+  .toggle-switch {
+    width: 145px;
+  }
+
+  .switch-track {
+    padding: 0 12px;
+  }
 }
