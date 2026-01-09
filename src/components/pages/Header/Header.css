@@ -145,16 +145,16 @@
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-size: 20px;
+  font-size: 18px;      /* 🔧 default biroz kichraytirildi */
   font-weight: bold;
+  line-height: 1;       /* 🔥 MUHIM */
+  flex-shrink: 0;       /* 🔥 ezilib ketmasin */
 }
 
 /* ================= 📱 MEDIA QUERIES ================= */
 
 /* 🔹 KICHIK TELEFONLAR */
 @media (max-width: 380px) {
-
-
   .switch-label {
     font-size: 13px;
   }
@@ -164,9 +164,9 @@
   }
 
   .plus-icon {
-    width: 24px;
-    height: 24px;
-    font-size: 18px;
+    width: 22px;        /* ❌ 14px juda kichik edi */
+    height: 22px;
+    font-size: 14px;    /* 🔥 proportional */
   }
 }
 
@@ -176,6 +176,9 @@
     gap: 6px;
   }
 
- 
-
+  .plus-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 13px;
+  }
 }
