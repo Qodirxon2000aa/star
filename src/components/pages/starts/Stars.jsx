@@ -194,7 +194,7 @@ const Stars = () => {
           onChange={(e) => setAmount(e.target.value)}
           className="inputs"
         />
-
+    <br /> <br />
         <div className="preset-list">
           {PRESETS.map((p) => (
             <div
