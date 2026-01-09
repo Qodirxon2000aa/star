@@ -1,6 +1,6 @@
 import React from "react";
 import "./WelcomeAnimation.css";
-import video from "../assets/anime.mov"
+import video from "../assets/anime.MOV"
 
 const WelcomeAnimation = ({ onFinish }) => {
   return (
