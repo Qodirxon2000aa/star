@@ -89,6 +89,8 @@
 .animation canvas {
   width: 180px !important;
   height: 180px !important;
+  border-radius: 12px;
+  
 }
 
 /* TEXT */
