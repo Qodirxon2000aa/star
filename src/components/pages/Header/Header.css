@@ -108,11 +108,12 @@
 /* ================= BALANCE ================= */
 
 .balance-plus-btn {
-  width: 110px;
+  width: 90px;
   height: 44px;
   border-radius: 50px;
   background: rgba(255,255,255,0.12);
   backdrop-filter: blur(12px);
+  padding: 2px;
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -128,7 +129,8 @@
 }
 
 .balance-text {
-  font-size: 16px;
+  font-size: 12px;
+  text-align: center;
   font-weight: 600;
   color: #fff;
   white-space: nowrap;
