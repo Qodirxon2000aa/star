@@ -1,18 +1,17 @@
 import React from "react";
+import Lottie from "lottie-react";
 import "./WelcomeAnimation.css";
-import video from "../assets/anime.mp4";
+import animationData from "../assets/animation.json";
 
 const WelcomeAnimation = ({ onFinish }) => {
   return (
     <div className="welcome-screen">
       <div className="video-box">
-        <video
-          className="welcome-video"
-          src={video}
-          autoPlay
-          muted
-          playsInline
-          onEnded={() => onFinish?.()}
+        <Lottie
+          animationData={animationData}
+          loop={false}          // 🔴 video kabi 1 marta
+          autoplay
+          onComplete={() => onFinish?.()} // ✅ video onEnded o‘rniga
         />
       </div>
     </div>

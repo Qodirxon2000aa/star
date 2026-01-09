@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useTelegram } from "../../../../context/TelegramContext";
+import Lottie from "lottie-react";
 import "./premium.css";
 
-// VIDEO PATH (o'zingiz almashtirasiz)
-import premiumVideo from "../../../assets/prem.mp4";
+// ✅ TO‘G‘RI LOTTIE JSON
+import premiumAnimation from "../../../assets/premuim.json";
 
-// AnimatedModal import qilindi
-import AnimatedModal from "../../ui/AnimatedModal"; // yo'lni loyihangizga qarab tuzating
+// ✅ AnimatedModal
+import AnimatedModal from "../../ui/AnimatedModal";
 
 const PremiumModal = ({ onClose }) => {
   const { createPremiumOrder, apiUser, user } = useTelegram();
@@ -20,15 +21,12 @@ const PremiumModal = ({ onClose }) => {
 
   const [validationError, setValidationError] = useState("");
 
-  // AnimatedModal uchun state
   const [animatedModal, setAnimatedModal] = useState({
     open: false,
     type: "success", // success | error | warning
     title: "",
     message: "",
   });
-
-  const balance = apiUser?.balance || "0";
 
   const plans = [
     { id: "3", months: 3, discount: "-20%", price: 159999000 },
@@ -49,7 +47,7 @@ const PremiumModal = ({ onClose }) => {
     fetch(`https://tezpremium.uz/starsapi/user.php?username=@${clean}`)
       .then((r) => r.json())
       .then((d) => {
-        d.username ? setUserInfo(d) : setUserInfo(null);
+        d?.username ? setUserInfo(d) : setUserInfo(null);
       })
       .catch(() => setUserInfo(null))
       .finally(() => setChecking(false));
@@ -91,14 +89,13 @@ const PremiumModal = ({ onClose }) => {
         overall: totalPrice,
       });
 
-      if (result.ok) {
+      if (result?.ok) {
         setAnimatedModal({
           open: true,
           type: "success",
           title: "Muvaffaqiyatli!",
           message: `Telegram Premium ${selectedPlan} oyga sovg'a qilindi! ⭐`,
         });
-        // Muvaffaqiyatdan keyin formani tozalash
         setUsername("");
         setUserInfo(null);
         setSelectedPlan("3");
@@ -106,16 +103,16 @@ const PremiumModal = ({ onClose }) => {
         setAnimatedModal({
           open: true,
           type: "error",
-          title: "Xatolik yuz berdi",
-          message: "Premium sovg'a qilishda muammo yuz berdi. Keyinroq urinib ko'ring.",
+          title: "Xatolik",
+          message: "Premium sovg'a qilishda muammo yuz berdi.",
         });
       }
-    } catch (err) {
+    } catch {
       setAnimatedModal({
         open: true,
         type: "error",
         title: "Server xatosi",
-        message: "Ulanishda muammo bor. Internet aloqangizni tekshiring.",
+        message: "Internet aloqani tekshiring.",
       });
     } finally {
       setSending(false);
@@ -125,9 +122,15 @@ const PremiumModal = ({ onClose }) => {
   return (
     <div className="premium-overlay" onClick={onClose}>
       <div className="premium-modal animate" onClick={(e) => e.stopPropagation()}>
+
+        {/* 🎬 LOTTIE ANIMATION */}
         <div className="vd">
           <div className="premium-video">
-            <video src={premiumVideo} autoPlay loop muted playsInline />
+            <Lottie
+              animationData={premiumAnimation}
+              loop
+              autoplay
+            />
           </div>
         </div>
 
@@ -148,7 +151,6 @@ const PremiumModal = ({ onClose }) => {
           {!userInfo && (
             <input
               className="tg-user-input"
-              type="text"
               placeholder="Telegram @username kiriting..."
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -185,15 +187,11 @@ const PremiumModal = ({ onClose }) => {
               onClick={() => setSelectedPlan(plan.id)}
             >
               <div className="radio-circle">
-                {selectedPlan === plan.id && <div className="radio-inner"></div>}
+                {selectedPlan === plan.id && <div className="radio-inner" />}
               </div>
               <div className="plan-info">
                 <span className="duration">
-                  {plan.months === 12
-                    ? "1 yil"
-                    : plan.months === 6
-                    ? "6 oy"
-                    : "3 oy"}
+                  {plan.months === 12 ? "1 yil" : `${plan.months} oy`}
                 </span>
                 <span className="discount">{plan.discount}</span>
               </div>
@@ -215,7 +213,7 @@ const PremiumModal = ({ onClose }) => {
         </button>
       </div>
 
-      {/* Animated Modal - barcha natijalar shu orqali chiqadi */}
+      {/* ✅ Animated Modal */}
       <AnimatedModal
         open={animatedModal.open}
         type={animatedModal.type}
@@ -223,10 +221,7 @@ const PremiumModal = ({ onClose }) => {
         message={animatedModal.message}
         onClose={() => {
           setAnimatedModal({ ...animatedModal, open: false });
-          // Muvaffaqiyatli bo'lsa butun modalni yopamiz
-          if (animatedModal.type === "success") {
-            onClose();
-          }
+          if (animatedModal.type === "success") onClose();
         }}
       />
     </div>

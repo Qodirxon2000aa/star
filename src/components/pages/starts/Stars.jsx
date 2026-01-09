@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useTelegram } from "../../../../context/TelegramContext";
 import "./Stars.css";
 import AnimatedModal from "../../ui/AnimatedModal";
-import starsVideo from "../../../assets/Telegram.mp4";
+import Lottie from "lottie-react";
 
-
+// ✅ TO‘G‘RI IMPORT
+import starsVideo from "../../../assets/stars.json";
 
 const PRESETS = [
   { stars: 50, price: "12 999" },
@@ -16,8 +17,14 @@ const PRESETS = [
 const Stars = () => {
   const { createOrder, apiUser, user } = useTelegram();
 
-  const [modal, setModal] = useState({ open: false, type: "", title: "", message: "" });
-  const [userNotFoundToast, setUserNotFoundToast] = useState(false); // Yangi toast state
+  const [modal, setModal] = useState({
+    open: false,
+    type: "",
+    title: "",
+    message: "",
+  });
+
+  const [userNotFoundToast, setUserNotFoundToast] = useState(false);
 
   const [username, setUsername] = useState("");
   const [userInfo, setUserInfo] = useState(null);
@@ -31,7 +38,7 @@ const Stars = () => {
     setModal({ open: true, type, title, message });
   };
 
-  /* Narxni olish */
+  /* ⭐ Narxni olish */
   useEffect(() => {
     fetch("https://tezpremium.uz/webapp/settings.php")
       .then((r) => r.json())
@@ -42,7 +49,7 @@ const Stars = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  /* Foydalanuvchini qidirish + Toast logikasi */
+  /* 👤 Foydalanuvchini tekshirish */
   useEffect(() => {
     if (!username || username.trim().length < 4) {
       setUserInfo(null);
@@ -58,17 +65,11 @@ const Stars = () => {
       .then((d) => {
         if (d.username) {
           setUserInfo(d);
-          setUserNotFoundToast(false); // topildi → toast o‘chadi
+          setUserNotFoundToast(false);
         } else {
           setUserInfo(null);
-          setUserNotFoundToast(true); // topilmadi → toast ko‘rsatiladi
-
-          // 3 soniyadan keyin avto yopiladi
-          const timer = setTimeout(() => {
-            setUserNotFoundToast(false);
-          }, 3000);
-
-          return () => clearTimeout(timer); // cleanup
+          setUserNotFoundToast(true);
+          setTimeout(() => setUserNotFoundToast(false), 3000);
         }
       })
       .catch(() => {
@@ -92,12 +93,22 @@ const Stars = () => {
     if (!userInfo) {
       return openModal("error", "Xatolik", "Foydalanuvchi topilmadi");
     }
+
     if (Number(amount) < 50 || Number(amount) > 10000) {
-      return openModal("warning", "Noto‘g‘ri miqdor", "50 – 10 000 oralig‘ida bo‘lishi kerak");
+      return openModal(
+        "warning",
+        "Noto‘g‘ri miqdor",
+        "50 – 10 000 oralig‘ida bo‘lishi kerak"
+      );
     }
+
     if (balance < totalPrice) {
       const diff = totalPrice - balance;
-      return openModal("warning", "Balans yetarli emas", `Yana ${diff.toLocaleString()} UZS yetishmayapti`);
+      return openModal(
+        "warning",
+        "Balans yetarli emas",
+        `Yana ${diff.toLocaleString()} UZS yetishmayapti`
+      );
     }
 
     setSending(true);
@@ -110,12 +121,16 @@ const Stars = () => {
       });
 
       if (res.ok) {
-        openModal("success", "Muvaffaqiyatli", "Telegram Stars muvaffaqiyatli yuborildi");
+        openModal(
+          "success",
+          "Muvaffaqiyatli",
+          "Telegram Stars muvaffaqiyatli yuborildi"
+        );
         setAmount("");
       } else {
         openModal("error", "Xatolik", "Buyurtma bajarilmadi");
       }
-    } catch (err) {
+    } catch {
       openModal("error", "Server xatosi", "API bilan muammo yuz berdi");
     } finally {
       setSending(false);
@@ -125,16 +140,16 @@ const Stars = () => {
   return (
     <div className="stars-wrapper">
       <div className="stars-card">
-        {/* Video */}
+        {/* ⭐ LOTTIE ANIMATION */}
         <div className="vd">
           <div className="stars-video">
-            <video src={starsVideo} autoPlay loop muted playsInline />
+            <Lottie animationData={starsVideo} loop autoplay />
           </div>
         </div>
 
         <h2 className="stars-title">Telegram Stars</h2>
 
-        {/* Kimga yuboramiz */}
+        {/* 👤 Kimga yuboramiz */}
         <div className="tg-user-section">
           <div className="tg-user-header">
             <div className="tg-user-title">Kimga yuboramiz?</div>
@@ -170,7 +185,7 @@ const Stars = () => {
           )}
         </div>
 
-        {/* Miqdor */}
+        {/* ⭐ Miqdor */}
         <label>Telegram Yulduzlari miqdori</label>
         <input
           type="number"
@@ -179,9 +194,7 @@ const Stars = () => {
           onChange={(e) => setAmount(e.target.value)}
           className="inputs"
         />
-        <br /> <br />
 
-        {/* Presets */}
         <div className="preset-list">
           {PRESETS.map((p) => (
             <div
@@ -195,12 +208,10 @@ const Stars = () => {
           ))}
         </div>
 
-        {/* Jami narx */}
         <div className="total">
           Jami: <strong>{totalPrice.toLocaleString()} UZS</strong>
         </div>
 
-        {/* Tugma */}
         <button
           className="buy-btn"
           disabled={sending || !userInfo || !amount}
@@ -210,7 +221,7 @@ const Stars = () => {
         </button>
       </div>
 
-      {/* Katta modal — muhim xabarlar uchun */}
+      {/* 🔔 MODALLAR */}
       <AnimatedModal
         open={modal.open}
         type={modal.type}
@@ -219,13 +230,12 @@ const Stars = () => {
         onClose={() => setModal({ ...modal, open: false })}
       />
 
-      {/* Kichik toast — faqat foydalanuvchi topilmaganda */}
       <AnimatedModal
         open={userNotFoundToast}
         type="info"
         message="Foydalanuvchi topilmadi. To‘g‘ri @username kiriting."
         onClose={() => setUserNotFoundToast(false)}
-        small={true}
+        small
       />
     </div>
   );
