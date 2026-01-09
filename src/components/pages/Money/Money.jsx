@@ -187,7 +187,7 @@ const Money = ({ onClose }) => {
   // Nusxa olish (umumiy funksiya)
   const copyToClipboard = (text, label = "Ma'lumot") => {
     navigator.clipboard.writeText(text);
-    setToast(`✅ ${label} nusxalandi`);
+    setToast(` ${label} nusxalandi`);
     setTimeout(() => setToast(""), 2500);
   };
 
