@@ -1,37 +1,38 @@
 // src/components/ReferralModal.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./ReferralModal.css";
 import Lottie from "lottie-react";
-
-// ✅ LOTTIE JSON
 import shareAnimation from "../../assets/share.json";
 
 const ReferralModal = ({ isOpen, onClose }) => {
-  if (!isOpen) return null;
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setVisible(true);
+    }
+  }, [isOpen]);
+
+  const handleClose = () => {
+    setVisible(false);
+    setTimeout(() => {
+      onClose();
+    }, 300); // fade-out va slide-out vaqti
+  };
+
+  if (!isOpen && !visible) return null;
 
   return (
-    <div className="referral-overlay" onClick={onClose}>
-      <div
-        className="referral-sheet"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* ❌ Close */}
-        <button className="close-btn" onClick={onClose}>
-          ×
-        </button>
+    <div className={`referral-overlay ${visible ? "show" : "hide"}`}>
+      <div className={`referral-fullscreen ${visible ? "slide-in" : "slide-out"}`}>
+        {/* ❌ CLOSE */}
+        <button className="close-btn" onClick={handleClose}>×</button>
 
-        {/* ⎯ Handle */}
-        <div className="sheet-handle" />
-
-        {/* 📦 Content */}
-        <div className="sheet-content">
-          {/* 🎬 Animation */}
+        {/* 📦 CONTENT */}
+        <div className="referral-content">
+          {/* 🎬 LOTTIE */}
           <div className="animation">
-            <Lottie className="lottie"
-              animationData={shareAnimation}
-              loop
-              autoplay
-            />
+            <Lottie animationData={shareAnimation} loop autoplay />
           </div>
 
           <h2>Referral dasturi</h2>
@@ -40,15 +41,14 @@ const ReferralModal = ({ isOpen, onClose }) => {
             Stars ishlang!
           </p>
 
-          {/* ⭐ Rewards */}
+          {/* ⭐ REWARDS */}
           <div className="rewards">
             <div className="reward">
               <span className="icon">⭐</span>
               <div>
                 <strong>Telegram Premium</strong>
                 <br />
-                Do‘stingizning Premium xaridi uchun{" "}
-                <strong>+15 ⭐</strong>
+                Premium xaridi uchun <strong>+15 ⭐</strong>
               </div>
             </div>
 
@@ -57,18 +57,15 @@ const ReferralModal = ({ isOpen, onClose }) => {
               <div>
                 <strong>Yulduzlar</strong>
                 <br />
-                Do‘stingizning 100 Stars xaridi uchun{" "}
-                <strong>+5 ⭐</strong>
+                100 Stars xaridi uchun <strong>+5 ⭐</strong>
               </div>
             </div>
           </div>
 
-          {/* 🔘 Buttons */}
-          <div className="buttons">
-            <button className="btn-invite">
-              Do‘stlarni taklif qilish
-            </button>
-          </div>
+          {/* 🔘 BUTTON */}
+          <button className="btn-invite">
+            Do‘stlarni taklif qilish
+          </button>
         </div>
       </div>
     </div>
