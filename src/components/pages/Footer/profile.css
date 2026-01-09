@@ -413,3 +413,12 @@
     font-size: 14px;
   }
 }
+
+.profile-overlay.closing {
+  animation: overlayOut 0.3s ease forwards;
+}
+
+@keyframes overlayOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}

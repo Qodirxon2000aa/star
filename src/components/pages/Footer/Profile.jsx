@@ -4,16 +4,11 @@ import { useTelegram } from "../../../../context/TelegramContext";
 import UserModal from "../UserModal/UserModal";
 import Lang from "../Header/Lang";
 
-// 🔥 React Icons
-import {
-  FiGlobe,
-  FiHelpCircle,
-  FiUser,
-  FiCreditCard,
-} from "react-icons/fi";
+// 🔥 Icons
+import { FiGlobe, FiHelpCircle, FiUser, FiCreditCard } from "react-icons/fi";
 import { FaTelegramPlane } from "react-icons/fa";
 
-/* 🔥 SUPPORT CONSTANTS */
+/* SUPPORT */
 const SUPPORT_HELP = "ahdsiz";
 const SUPPORT_CHANNEL = "fatih_link";
 const SUPPORT_DEV = "behissiyot";
@@ -23,16 +18,19 @@ const Profile = ({ onClose }) => {
 
   const [openHistory, setOpenHistory] = useState(false);
   const [openLang, setOpenLang] = useState(false);
+  const [closing, setClosing] = useState(false);
 
-  // 🖼 AVATAR
+  if (!user) return null;
+
+  // 🔒 Close with animation
+  const handleClose = () => {
+    setClosing(true);
+    setTimeout(() => onClose(), 400);
+  };
+
+  // 🖼 Avatar
   const avatar = useMemo(() => {
-    if (
-      user?.photo_url &&
-      typeof user.photo_url === "string" &&
-      user.photo_url.startsWith("http")
-    ) {
-      return user.photo_url;
-    }
+    if (user?.photo_url?.startsWith("http")) return user.photo_url;
     return "/avatar.png";
   }, [user?.photo_url]);
 
@@ -48,34 +46,32 @@ const Profile = ({ onClose }) => {
 
   const balance = loading ? "..." : Number(apiUser?.balance || 0);
 
-  if (!user) return null;
-
-  /* 🔥 UNIVERSAL TELEGRAM LINK OPENER */
+  // 🔗 Telegram open
   const openTelegram = (username) => {
-    const tg = window.Telegram?.WebApp;
     const link = `https://t.me/${username}`;
-
-    if (tg?.openTelegramLink) {
-      tg.openTelegramLink(link);
-    } else {
-      window.open(link, "_blank");
-    }
+    window.Telegram?.WebApp?.openTelegramLink
+      ? window.Telegram.WebApp.openTelegramLink(link)
+      : window.open(link, "_blank");
   };
 
   return (
     <>
-      <div className="profile-overlay" onClick={onClose}>
-        <div className="profile-panel" onClick={(e) => e.stopPropagation()}>
-          <button className="profile-close" onClick={onClose}>
-            ×
-          </button>
+      <div
+        className={`profile-overlay ${closing ? "closing" : ""}`}
+        onClick={handleClose}
+      >
+        <div
+          className={`profile-panel ${closing ? "closing" : ""}`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button className="profile-close" onClick={handleClose}>×</button>
 
-          {/* 👤 HEADER */}
+          {/* HEADER */}
           <div className="profile-header">
             <img
               src={avatar}
-              alt="avatar"
               className="profile-avatar"
+              alt="avatar"
               referrerPolicy="no-referrer"
               onError={(e) => (e.currentTarget.src = "/avatar.png")}
             />
@@ -83,77 +79,49 @@ const Profile = ({ onClose }) => {
             <p>{username}</p>
           </div>
 
-          {/* 📋 LIST */}
+          {/* LIST */}
           <div className="profile-list">
-            {/* 💰 BALANCE */}
             <div className="profile-item">
               <div className="item-left">
-                <div className="item-icon">
-                  <FiCreditCard />
-                </div>
+                <div className="item-icon"><FiCreditCard /></div>
                 <span>Balans</span>
               </div>
               <strong>{balance} ⭐</strong>
             </div>
 
-            {/* 🌐 LANGUAGE */}
-            <div
-              className="profile-item clickable"
-              onClick={() => setOpenLang(true)}
-            >
+            <div className="profile-item clickable" onClick={() => setOpenLang(true)}>
               <div className="item-left">
-                <div className="item-icon">
-                  <FiGlobe />
-                </div>
+                <div className="item-icon"><FiGlobe /></div>
                 <span>Til</span>
               </div>
               <strong>O‘zbekcha ›</strong>
             </div>
 
-            {/* 🆘 SUPPORT */}
-            <div
-              className="profile-item clickable support-item"
-              onClick={() => openTelegram(SUPPORT_HELP)}
-            >
+            <div className="profile-item clickable" onClick={() => openTelegram(SUPPORT_HELP)}>
               <div className="item-left">
-                <div className="item-icon">
-                  <FiHelpCircle />
-                </div>
+                <div className="item-icon"><FiHelpCircle /></div>
                 <span>Yordam</span>
               </div>
               <strong>@{SUPPORT_HELP} ›</strong>
             </div>
 
-            {/* 📢 CHANNEL */}
-            <div
-              className="profile-item clickable support-item"
-              onClick={() => openTelegram(SUPPORT_CHANNEL)}
-            >
+            <div className="profile-item clickable" onClick={() => openTelegram(SUPPORT_CHANNEL)}>
               <div className="item-left">
-                <div className="item-icon">
-                  <FaTelegramPlane />
-                </div>
-                <span>Yangiliklar kanali</span>
+                <div className="item-icon"><FaTelegramPlane /></div>
+                <span>Yangiliklar</span>
               </div>
               <strong>@{SUPPORT_CHANNEL} ›</strong>
             </div>
 
-            {/* 👨‍💻 DEV */}
-            <div
-              className="profile-item clickable support-item"
-              onClick={() => openTelegram(SUPPORT_DEV)}
-            >
+            <div className="profile-item clickable" onClick={() => openTelegram(SUPPORT_DEV)}>
               <div className="item-left">
-                <div className="item-icon">
-                  <FiUser />
-                </div>
-                <span>Web App yaratuvchisi</span>
+                <div className="item-icon"><FiUser /></div>
+                <span>Yaratuvchi</span>
               </div>
               <strong>@{SUPPORT_DEV} ›</strong>
             </div>
           </div>
 
-          {/* 📜 HISTORY */}
           <button
             className="profile-history-btn"
             onClick={() => setOpenHistory(true)}
@@ -163,7 +131,6 @@ const Profile = ({ onClose }) => {
         </div>
       </div>
 
-      {/* 🔥 MODALS */}
       {openHistory && <UserModal onClose={() => setOpenHistory(false)} />}
       {openLang && <Lang onClose={() => setOpenLang(false)} />}
     </>
