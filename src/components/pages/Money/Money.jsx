@@ -204,6 +204,7 @@ const Money = ({ onClose }) => {
           <>
             <div className="money-method">
               <label>To'lov turi</label>
+              <br /> <br />
               <div className="method-selected">Karta orqali</div>
             </div>
 
@@ -219,6 +220,7 @@ const Money = ({ onClose }) => {
                   setAmount(val ? parseInt(val, 10).toLocaleString("ru-RU") : "");
                 }}
               />
+              <br /> <br />
               <div className="money-limits">
                 Min: 1 000 UZS • Max: 10 000 000 UZS
               </div>
