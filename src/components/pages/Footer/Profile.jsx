@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from "react";
 import "./profile.css";
-import { useTelegram } from "../../../context/TelegramContext";
-import UserModal from "../../components/pages/UserModal/UserModal";
-import Lang from "../pages/Header/Lang";
+import { useTelegram } from "../../../../context/TelegramContext";
+import UserModal from "../UserModal/UserModal";
+import Lang from "../Header/Lang";
 
 // 🔥 React Icons
 import {

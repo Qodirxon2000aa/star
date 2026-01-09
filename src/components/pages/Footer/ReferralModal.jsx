@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import "./ReferralModal.css";
 import Lottie from "lottie-react";
-import shareAnimation from "../../assets/share.json";
+import shareAnimation from "../../../assets/share.json";
 
 const ReferralModal = ({ isOpen, onClose }) => {
   const [visible, setVisible] = useState(false);

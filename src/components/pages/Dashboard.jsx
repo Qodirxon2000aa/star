@@ -5,10 +5,10 @@ import Header from "../pages/Header/Header.jsx";
 import Premium from "../pages/premuium/Premium.jsx";
 import Stars from "../pages/starts/Stars.jsx";
 
-import Footer from "../Footer/Footer.jsx";
-import ReferralModal from "../Footer/ReferralModal.jsx";
+import Footer from "./Footer/Footer.jsx";
+import ReferralModal from "./Footer/ReferralModal.jsx";
 import Money from "../../components/pages/Money/Money.jsx";
-import Profile from "../../components/Footer/Profile.jsx";
+import Profile from "./Footer/Profile.jsx";
 
 // 🔥 WELCOME VIDEO
 import WelcomeAnimation from "../WelcomeAnimation.jsx";
