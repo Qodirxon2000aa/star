@@ -4,14 +4,14 @@ import { useTelegram } from "../../../context/TelegramContext";
 import UserModal from "../../components/pages/UserModal/UserModal";
 import Lang from "../pages/Header/Lang";
 
-const SUPPORT_USERNAME = "tezstar_supp";
-const SUPPORT_CHANNEL = "support_channel";
-const SUPPORT_DEV = "behissiyot"
+/* 🔥 SUPPORT CONSTANTS */
+const SUPPORT_HELP = "ahdsiz";
+const SUPPORT_CHANNEL = "fatih_link";
+const SUPPORT_DEV = "behissiyot";
 
 const Profile = ({ onClose }) => {
   const { user, apiUser, loading } = useTelegram();
 
-  // 🔥 Modallar state
   const [openHistory, setOpenHistory] = useState(false);
   const [openLang, setOpenLang] = useState(false);
 
@@ -41,49 +41,27 @@ const Profile = ({ onClose }) => {
 
   if (!user) return null;
 
-  // 🔥 TELEGRAM SUPPORT OCHISH
-  const openSupport = () => {
+  /* 🔥 UNIVERSAL TELEGRAM LINK OPENER */
+  const openTelegram = (username) => {
     const tg = window.Telegram?.WebApp;
+    const link = `https://t.me/${username}`;
 
     if (tg?.openTelegramLink) {
-      tg.openTelegramLink(`https://t.me/${SUPPORT_USERNAME}`);
+      tg.openTelegramLink(link);
     } else {
-      window.open(`https://t.me/${SUPPORT_USERNAME}`, "_blank");
-    }
-  };
-
-   const openSupportChanel = () => {
-    const tg = window.Telegram?.WebApp;
-
-    if (tg?.openTelegramLink) {
-      tg.openTelegramLink(`https://t.me/${SUPPORT_USERNAME}`);
-    } else {
-      window.open(`https://t.me/${SUPPORT_USERNAME}`, "_blank");
-    }
-  };
-
-
-    const openSupportDev = () => {
-    const tg = window.Telegram?.WebApp;
-
-    if (tg?.openTelegramLink) {
-      tg.openTelegramLink(`https://t.me/${SUPPORT_USERNAME}`);
-    } else {
-      window.open(`https://t.me/${SUPPORT_USERNAME}`, "_blank");
+      window.open(link, "_blank");
     }
   };
 
   return (
     <>
       <div className="profile-overlay" onClick={onClose}>
-        <div
-          className="profile-panel"
-          onClick={(e) => e.stopPropagation()}
-        >
+        <div className="profile-panel" onClick={(e) => e.stopPropagation()}>
           <button className="profile-close" onClick={onClose}>
             ×
           </button>
 
+          {/* 👤 HEADER */}
           <div className="profile-header">
             <img
               src={avatar}
@@ -98,13 +76,14 @@ const Profile = ({ onClose }) => {
             <p>{username}</p>
           </div>
 
+          {/* 📋 LIST */}
           <div className="profile-list">
             <div className="profile-item">
               <span>Balans</span>
               <strong>{balance} ⭐</strong>
             </div>
 
-            {/* 🌐 TIL */}
+            {/* 🌐 LANGUAGE */}
             <div
               className="profile-item clickable"
               onClick={() => setOpenLang(true)}
@@ -113,33 +92,35 @@ const Profile = ({ onClose }) => {
               <strong>O‘zbekcha ›</strong>
             </div>
 
-            {/* 🆘 YORDAM / SUPPORT */}
+            {/* 🆘 YORDAM */}
             <div
               className="profile-item clickable support-item"
-              onClick={openSupport}
+              onClick={() => openTelegram(SUPPORT_HELP)}
             >
               <span>Yordam</span>
-              <strong>@{SUPPORT_USERNAME} ›</strong>
+              <strong>@{SUPPORT_HELP} ›</strong>
             </div>
+
+            {/* 📢 CHANNEL */}
             <div
               className="profile-item clickable support-item"
-              onClick={openSupportChanel}
+              onClick={() => openTelegram(SUPPORT_CHANNEL)}
             >
               <span>Yangiliklar kanali</span>
               <strong>@{SUPPORT_CHANNEL} ›</strong>
             </div>
 
-
-              <div
+            {/* 👨‍💻 DEV */}
+            <div
               className="profile-item clickable support-item"
-              onClick={openSupportDev}
+              onClick={() => openTelegram(SUPPORT_DEV)}
             >
               <span>Web App yaratuvchisi</span>
               <strong>@{SUPPORT_DEV} ›</strong>
             </div>
           </div>
 
-          {/* 📜 TRANZAKSIYALAR */}
+          {/* 📜 HISTORY */}
           <button
             className="profile-history-btn"
             onClick={() => setOpenHistory(true)}
@@ -149,12 +130,8 @@ const Profile = ({ onClose }) => {
         </div>
       </div>
 
-      {/* 🔥 USER MODAL */}
-      {openHistory && (
-        <UserModal onClose={() => setOpenHistory(false)} />
-      )}
-
-      {/* 🔥 LANG MODAL */}
+      {/* 🔥 MODALS */}
+      {openHistory && <UserModal onClose={() => setOpenHistory(false)} />}
       {openLang && <Lang onClose={() => setOpenLang(false)} />}
     </>
   );
