@@ -2,7 +2,7 @@
 .welcome-screen {
   position: fixed;
   inset: 0;
-  background: #1c1c1e;
+  background: #1c1c1e; /* to‘liq qora */
   z-index: 9999;
 
   display: flex;
@@ -10,19 +10,17 @@
   justify-content: center;
 }
 
-/* VIDEO WRAPPER – 50x50 */
-.main {
+/* 🔲 VIDEO WRAPPER – 150px tortburchak */
+.video-box {
   width: 250px;
-  height: 250px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  height: 250px; /* agar tortburchak balandroq bo‘lsin desang 120px qil */
+  border-radius: 12px; /* xohlasang olib tashla */
+  overflow: hidden;
 }
 
-/* VIDEO */
+/* 🎥 VIDEO */
 .welcome-video {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* 🔥 kesilmaydi */
+  object-fit: cover; /* 🔥 tortburchakni to‘liq to‘ldiradi */
 }
