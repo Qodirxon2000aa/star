@@ -1,20 +1,18 @@
 import React from "react";
 import "./WelcomeAnimation.css";
-import video from "../assets/anime.mov"
+import video from "../assets/anime.mp4"; // ❗ faqat mp4
 
 const WelcomeAnimation = ({ onFinish }) => {
   return (
     <div className="welcome-screen">
-      <div className="main">
-        <video
-          className="welcome-video"
-          src={video}   // public/ ichida
-          autoPlay
-          muted
-          playsInline
-          onEnded={onFinish}
-        />
-      </div>
+      <video
+        className="welcome-video"
+        src={video}
+        autoPlay
+        muted
+        playsInline
+        onEnded={() => onFinish?.()} // ✅ SAFE
+      />
     </div>
   );
 };

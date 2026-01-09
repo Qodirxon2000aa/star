@@ -1,21 +1,21 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./components/pages/Dashboard";
 import Gifts from "./components/pages/Gifts/Gifts";
+
 import { TelegramProvider } from "../context/TelegramContext";
 import { PreloadProvider, usePreload } from "../context/PreloadContext";
+
 import WelcomeAnimation from "./components/WelcomeAnimation";
-import YandexTracker from "./../YandexTracker";
-import { SpeedInsights } from "@vercel/speed-insights/react"; // ✅ TO‘G‘RI IMPORT
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 const AppContent = () => {
   const { ready } = usePreload();
 
-  // 🔥 PRELOAD TUGAMAGUNCHA HECH NIMA YO‘Q
+  // 🔥 PRELOAD TUGAMAGUNCHA FAQAT VIDEO
   if (!ready) return <WelcomeAnimation />;
 
   return (
     <Router>
-      <YandexTracker />
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<Dashboard />} />
