@@ -4,6 +4,15 @@ import { useTelegram } from "../../../context/TelegramContext";
 import UserModal from "../../components/pages/UserModal/UserModal";
 import Lang from "../pages/Header/Lang";
 
+// 🔥 React Icons
+import {
+  FiGlobe,
+  FiHelpCircle,
+  FiUser,
+  FiCreditCard,
+} from "react-icons/fi";
+import { FaTelegramPlane } from "react-icons/fa";
+
 /* 🔥 SUPPORT CONSTANTS */
 const SUPPORT_HELP = "ahdsiz";
 const SUPPORT_CHANNEL = "fatih_link";
@@ -68,9 +77,7 @@ const Profile = ({ onClose }) => {
               alt="avatar"
               className="profile-avatar"
               referrerPolicy="no-referrer"
-              onError={(e) => {
-                e.currentTarget.src = "/avatar.png";
-              }}
+              onError={(e) => (e.currentTarget.src = "/avatar.png")}
             />
             <h2>{fullName}</h2>
             <p>{username}</p>
@@ -78,8 +85,14 @@ const Profile = ({ onClose }) => {
 
           {/* 📋 LIST */}
           <div className="profile-list">
+            {/* 💰 BALANCE */}
             <div className="profile-item">
-              <span>Balans</span>
+              <div className="item-left">
+                <div className="item-icon">
+                  <FiCreditCard />
+                </div>
+                <span>Balans</span>
+              </div>
               <strong>{balance} ⭐</strong>
             </div>
 
@@ -88,16 +101,26 @@ const Profile = ({ onClose }) => {
               className="profile-item clickable"
               onClick={() => setOpenLang(true)}
             >
-              <span>Til</span>
+              <div className="item-left">
+                <div className="item-icon">
+                  <FiGlobe />
+                </div>
+                <span>Til</span>
+              </div>
               <strong>O‘zbekcha ›</strong>
             </div>
 
-            {/* 🆘 YORDAM */}
+            {/* 🆘 SUPPORT */}
             <div
               className="profile-item clickable support-item"
               onClick={() => openTelegram(SUPPORT_HELP)}
             >
-              <span>Yordam</span>
+              <div className="item-left">
+                <div className="item-icon">
+                  <FiHelpCircle />
+                </div>
+                <span>Yordam</span>
+              </div>
               <strong>@{SUPPORT_HELP} ›</strong>
             </div>
 
@@ -106,7 +129,12 @@ const Profile = ({ onClose }) => {
               className="profile-item clickable support-item"
               onClick={() => openTelegram(SUPPORT_CHANNEL)}
             >
-              <span>Yangiliklar kanali</span>
+              <div className="item-left">
+                <div className="item-icon">
+                  <FaTelegramPlane />
+                </div>
+                <span>Yangiliklar kanali</span>
+              </div>
               <strong>@{SUPPORT_CHANNEL} ›</strong>
             </div>
 
@@ -115,7 +143,12 @@ const Profile = ({ onClose }) => {
               className="profile-item clickable support-item"
               onClick={() => openTelegram(SUPPORT_DEV)}
             >
-              <span>Web App yaratuvchisi</span>
+              <div className="item-left">
+                <div className="item-icon">
+                  <FiUser />
+                </div>
+                <span>Web App yaratuvchisi</span>
+              </div>
               <strong>@{SUPPORT_DEV} ›</strong>
             </div>
           </div>
