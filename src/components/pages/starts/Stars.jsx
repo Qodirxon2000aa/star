@@ -4,7 +4,6 @@ import "./Stars.css";
 import AnimatedModal from "../../ui/AnimatedModal";
 import Lottie from "lottie-react";
 
-// ✅ TO‘G‘RI IMPORT
 import starsVideo from "../../../assets/stars.json";
 
 const PRESETS = [
@@ -12,6 +11,12 @@ const PRESETS = [
   { stars: 100, price: "25 999" },
   { stars: 250, price: "64 999" },
   { stars: 500, price: "129 999" },
+];
+
+const SHOW_MORE_PRESETS = [
+  { stars: 1000, price: "259 999" },
+  { stars: 5000, price: "1 299 999" },
+  { stars: 10000, price: "2 599 999" },
 ];
 
 const Stars = () => {
@@ -25,7 +30,6 @@ const Stars = () => {
   });
 
   const [userNotFoundToast, setUserNotFoundToast] = useState(false);
-
   const [username, setUsername] = useState("");
   const [userInfo, setUserInfo] = useState(null);
   const [checking, setChecking] = useState(false);
@@ -34,22 +38,24 @@ const Stars = () => {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
 
+  // 🔽 SHOW MORE
+  const [showMore, setShowMore] = useState(false);
+
   const openModal = (type, title, message) => {
     setModal({ open: true, type, title, message });
   };
 
-  /* ⭐ Narxni olish */
+  /* ⭐ PRICE */
   useEffect(() => {
     fetch("https://m4746.myxvest.ru/webapp/settings.php")
       .then((r) => r.json())
       .then((d) => {
         if (d.ok) setPrice(Number(d.settings.price));
       })
-      .catch(() => console.error("Narx yuklanmadi"))
       .finally(() => setLoading(false));
   }, []);
 
-  /* 👤 Foydalanuvchini tekshirish */
+  /* 👤 USERNAME CHECK */
   useEffect(() => {
     if (!username || username.trim().length < 4) {
       setUserInfo(null);
@@ -90,17 +96,15 @@ const Stars = () => {
   };
 
   const handleSubmit = async () => {
-    if (!userInfo) {
+    if (!userInfo)
       return openModal("error", "Xatolik", "Foydalanuvchi topilmadi");
-    }
 
-    if (Number(amount) < 50 || Number(amount) > 10000) {
+    if (Number(amount) < 50 || Number(amount) > 10000)
       return openModal(
         "warning",
         "Noto‘g‘ri miqdor",
         "50 – 10 000 oralig‘ida bo‘lishi kerak"
       );
-    }
 
     if (balance < totalPrice) {
       const diff = totalPrice - balance;
@@ -121,17 +125,13 @@ const Stars = () => {
       });
 
       if (res.ok) {
-        openModal(
-          "success",
-          "Muvaffaqiyatli",
-          "Telegram Stars muvaffaqiyatli yuborildi"
-        );
+        openModal("success", "Muvaffaqiyatli", "Telegram Stars yuborildi");
         setAmount("");
       } else {
         openModal("error", "Xatolik", "Buyurtma bajarilmadi");
       }
     } catch {
-      openModal("error", "Server xatosi", "API bilan muammo yuz berdi");
+      openModal("error", "Server xatosi", "API muammo");
     } finally {
       setSending(false);
     }
@@ -140,16 +140,13 @@ const Stars = () => {
   return (
     <div className="stars-wrapper">
       <div className="stars-card">
-        {/* ⭐ LOTTIE ANIMATION */}
-        <div className="vd">
-          <div className="stars-video">
-            <Lottie animationData={starsVideo} loop autoplay />
-          </div>
+        <div className="stars-video">
+          <Lottie animationData={starsVideo} loop autoplay />
         </div>
 
         <h2 className="stars-title">Telegram Stars</h2>
 
-        {/* 👤 Kimga yuboramiz */}
+        {/* USER */}
         <div className="tg-user-section">
           <div className="tg-user-header">
             <div className="tg-user-title">Kimga yuboramiz?</div>
@@ -161,19 +158,18 @@ const Stars = () => {
           {!userInfo ? (
             <input
               className="tg-user-input"
-              placeholder="Telegram @username kiriting..."
+              placeholder="Telegram @username..."
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
           ) : (
             <div className="tg-user-chip">
               <img src={userInfo.photo} alt="avatar" />
-              <div className="tg-user-info">
-                <div className="tg-user-name">{userInfo.name}</div>
-                <div className="tg-user-username">@{userInfo.username}</div>
+              <div>
+                <div>{userInfo.name}</div>
+                <div>@{userInfo.username}</div>
               </div>
               <button
-                className="tg-user-clear"
                 onClick={() => {
                   setUsername("");
                   setUserInfo(null);
@@ -185,8 +181,7 @@ const Stars = () => {
           )}
         </div>
 
-        {/* ⭐ Miqdor */}
-        <label>Telegram Yulduzlari miqdori</label>
+        {/* AMOUNT */}
         <input
           type="number"
           placeholder="50 dan 10 000 gacha"
@@ -194,7 +189,7 @@ const Stars = () => {
           onChange={(e) => setAmount(e.target.value)}
           className="inputs"
         />
-    <br /> <br />
+
         <div className="preset-list">
           {PRESETS.map((p) => (
             <div
@@ -208,6 +203,33 @@ const Stars = () => {
           ))}
         </div>
 
+        {/* SHOW MORE BUTTON */}
+        
+
+        {/* SHOW MORE LIST WITH FADE */}
+        <div
+          className={`preset-list more ${
+            showMore ? "fade-in" : "fade-out"
+          }`}
+        >
+
+          {SHOW_MORE_PRESETS.map((p) => (
+            <div
+              key={p.stars}
+              className={`preset ${Number(amount) === p.stars ? "active" : ""}`}
+              onClick={() => setAmount(p.stars)}
+            >
+              {p.stars} Stars
+              <span>{p.price} UZS</span>
+            </div>
+          ))}
+        </div>
+<button
+          className="show-more-btn"
+          onClick={() => setShowMore((v) => !v)}
+        >
+          {showMore ? "Yopish ▲" : "Ko‘proq ko‘rsat ▼"}
+        </button>
         <div className="total">
           Jami: <strong>{totalPrice.toLocaleString()} UZS</strong>
         </div>
@@ -219,9 +241,11 @@ const Stars = () => {
         >
           {sending ? "Yuborilmoqda..." : "Sotib olish"}
         </button>
-      </div>
 
-      {/* 🔔 MODALLAR */}
+        
+      </div>
+      
+
       <AnimatedModal
         open={modal.open}
         type={modal.type}
@@ -233,7 +257,7 @@ const Stars = () => {
       <AnimatedModal
         open={userNotFoundToast}
         type="info"
-        message="Foydalanuvchi topilmadi. To‘g‘ri @username kiriting."
+        message="Foydalanuvchi topilmadi. @username tekshiring."
         onClose={() => setUserNotFoundToast(false)}
         small
       />
