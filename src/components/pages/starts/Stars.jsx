@@ -163,13 +163,14 @@ const Stars = () => {
               onChange={(e) => setUsername(e.target.value)}
             />
           ) : (
-            <div className="tg-user-chip">
+              <div className="tg-user-chip">
               <img src={userInfo.photo} alt="avatar" />
-              <div>
-                <div>{userInfo.name}</div>
-                <div>@{userInfo.username}</div>
+              <div className="tg-user-info">
+                <div className="tg-user-name">{userInfo.name}</div>
+                <div className="tg-user-username">@{userInfo.username}</div>
               </div>
               <button
+                className="tg-user-clear"
                 onClick={() => {
                   setUsername("");
                   setUserInfo(null);
