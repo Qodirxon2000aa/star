@@ -6,45 +6,66 @@ const Market = ({ onClose }) => {
   const [selectedGift, setSelectedGift] = useState(null);
   const [type, setType] = useState("all");
   const [giftsData, setGiftsData] = useState([]);
-  const [loading, setLoading] = useState(false);
-
+  const [initialLoading, setInitialLoading] = useState(true); // Faqat birinchi yuklash uchun
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const [recipient, setRecipient] = useState("");
   const [userInfo, setUserInfo] = useState(null);
   const [checking, setChecking] = useState(false);
   const [purchasing, setPurchasing] = useState(false);
   const [purchaseError, setPurchaseError] = useState("");
-
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-
   const [balanceAlert, setBalanceAlert] = useState(false);
 
   const { apiUser, createGiftOrder, refreshUser, user } = useTelegram();
-
   const timeoutRef = useRef(null);
+  const intervalRef = useRef(null);
 
-  /* ================= FETCH GIFTS ================= */
-  useEffect(() => {
-    setLoading(true);
+  /* ================= JIMLIKCHA YANGILANADIGAN FETCH ================= */
+  const fetchGifts = async () => {
     const url =
       type === "all"
         ? "https://m4746.myxvest.ru/webapp/giftlar.php"
         : `https://m4746.myxvest.ru/webapp/giftlar.php?type=${type}`;
 
-    fetch(url)
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.ok) setGiftsData(d.gifts || []);
-        else setGiftsData([]);
-      })
-      .catch(() => setGiftsData([]))
-      .finally(() => setLoading(false));
+    try {
+      const r = await fetch(url);
+      const d = await r.json();
+
+      if (d.ok && Array.isArray(d.gifts)) {
+        setGiftsData((prev) => {
+          // Agar ma'lumot bir xil bo'lsa — rerender bo'lmasin
+          if (JSON.stringify(prev) === JSON.stringify(d.gifts)) {
+            return prev;
+          }
+          return d.gifts;
+        });
+      } else {
+        setGiftsData([]);
+      }
+    } catch (err) {
+      console.warn("Giftlar yangilanishda xato:", err);
+    } finally {
+      setInitialLoading(false); // Birinchi yuklash tugagach o'chiramiz
+    }
+  };
+
+  /* ================= HAR 5 SEKUNDDA YANGILANISH ================= */
+  useEffect(() => {
+    setInitialLoading(true);
+    fetchGifts();
+
+    intervalRef.current = setInterval(() => {
+      fetchGifts(); // Jim yangilanish
+    }, 5000); // 5 sekund
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
   }, [type]);
 
-  /* ================= USERNAME TEKSHIRISH + YANGI YOZISHDA TOZALASH ================= */
+  /* ================= USERNAME TEKSHIRISH (DEBOUNCE) ================= */
   useEffect(() => {
-    // Agar input bo'sh bo'lsa
     if (!recipient.trim()) {
       setUserInfo(null);
       setChecking(false);
@@ -52,10 +73,7 @@ const Market = ({ onClose }) => {
       return;
     }
 
-    // Foydalanuvchi yangi yozishni boshlagan bo'lsa — eski natijani tozalaymiz
-    if (userInfo) {
-      setUserInfo(null);
-    }
+    if (userInfo) setUserInfo(null);
 
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
@@ -81,7 +99,7 @@ const Market = ({ onClose }) => {
         })
         .catch(() => setUserInfo(null))
         .finally(() => setChecking(false));
-    }, 800); // biroz tezroq javob berish uchun 800ms
+    }, 800);
 
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -90,15 +108,12 @@ const Market = ({ onClose }) => {
 
   const canAfford = (price) => Number(apiUser?.balance || 0) >= Number(price);
 
-  /* ================= SOTIB OLISH → PURCHASE MODAL ================= */
   const handleBuyClick = (gift, e) => {
     e.stopPropagation();
-
     if (!canAfford(gift.price)) {
       setBalanceAlert(true);
       return;
     }
-
     setSelectedGift(gift);
     setShowPurchaseModal(true);
     setRecipient("");
@@ -106,7 +121,6 @@ const Market = ({ onClose }) => {
     setPurchaseError("");
   };
 
-  /* ================= O'ZIGA YUBORISH ================= */
   const handleSelf = () => {
     if (user?.username) {
       const username = "@" + user.username.replace("@", "");
@@ -119,37 +133,31 @@ const Market = ({ onClose }) => {
     }
   };
 
-  /* ================= CHIPNI TOZALASH (× bosilganda) ================= */
   const clearRecipient = () => {
     setRecipient("");
     setUserInfo(null);
     setPurchaseError("");
   };
 
-  /* ================= TASDIQLASH TUGMASI → CONFIRM MODAL OCHILADI ================= */
- const handleConfirmClick = () => {
-  if (!recipient.trim()) {
-    setPurchaseError("Iltimos, qabul qiluvchi username kiriting");
-    return;
-  }
+  const handleConfirmClick = () => {
+    if (!recipient.trim()) {
+      setPurchaseError("Iltimos, qabul qiluvchi username kiriting");
+      return;
+    }
+    if (!userInfo) {
+      setPurchaseError("Foydalanuvchi topilmadi. To‘g‘ri username kiriting");
+      return;
+    }
+    setPurchaseError("");
+    setShowPurchaseModal(false);
+    setShowConfirmModal(true);
+  };
 
-  if (!userInfo) {
-    setPurchaseError("Foydalanuvchi topilmadi. To‘g‘ri username kiriting");
-    return;
-  }
-
-  setPurchaseError("");
-
-  // 🔥 MUHIM FIX
-  setShowPurchaseModal(false);
-  setShowConfirmModal(true);
-};
-
-  /* ================= HA → SOTIB OLISH ================= */
   const confirmAndPurchase = async () => {
-  setShowConfirmModal(false);
-  setPurchasing(true);
-  setPurchaseError("");
+    setShowConfirmModal(false);
+    setPurchasing(true);
+    setPurchaseError("");
+
     try {
       const res = await createGiftOrder({
         giftId: selectedGift.id,
@@ -159,6 +167,7 @@ const Market = ({ onClose }) => {
 
       if (res.ok) {
         await refreshUser();
+        fetchGifts(); // Darhol yangilash
 
         setShowPurchaseModal(false);
         setShowSuccessModal(true);
@@ -171,7 +180,7 @@ const Market = ({ onClose }) => {
         }, 3000);
       } else {
         setPurchaseError(res.message || "Xatolik yuz berdi");
-        setShowPurchaseModal(true); // xato bo'lsa modalni ochiq qoldiramiz
+        setShowPurchaseModal(true);
       }
     } catch (err) {
       setPurchaseError("Tarmoq xatosi");
@@ -193,31 +202,30 @@ const Market = ({ onClose }) => {
             <option value="cheap">Arzon giftlar</option>
             <option value="expensive">Qimmat giftlar</option>
           </select>
-
           <div className="user-balance creative-balance">
-  <span className="balance-icon">💰</span>
-  <div className="balance-info">
-    <div className="balance-label">Balans</div>
-    <div className="balance-amount">
-      {Number(apiUser?.balance || 0).toLocaleString()} so'm
-    </div>
-  </div>
-</div>
-
+            <span className="balance-icon">💰</span>
+            <div className="balance-info">
+              <div className="balance-label">Balans</div>
+              <div className="balance-amount">
+                {Number(apiUser?.balance || 0).toLocaleString()} so'm
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* GIFTS GRID */}
         <div className="gifts-grid">
-          {loading && <p className="loading-text">Loading...</p>}
-          {!loading && giftsData.length === 0 && (
-  <div className="empty-state">
-    <div className="empty-icon">❌</div>
-    <h3>Giftlar topilmadi</h3>
-    <p>Boshqa kategoriya tanlab ko‘ring</p>
-  </div>
-)}
+          {initialLoading && <p className="loading-text">Yuklanmoqda...</p>}
 
-          {!loading &&
+          {!initialLoading && giftsData.length === 0 && (
+            <div className="empty-state">
+              <div className="empty-icon">❌</div>
+              <h3>Giftlar topilmadi</h3>
+              <p>Boshqa kategoriya tanlab ko‘ring</p>
+            </div>
+          )}
+
+          {!initialLoading &&
             giftsData.map((gift) => (
               <div key={gift.id} className="gift-card" onClick={() => setSelectedGift(gift)}>
                 <div className="gift-image">
@@ -239,42 +247,41 @@ const Market = ({ onClose }) => {
 
       {/* DETAIL MODAL */}
       {selectedGift &&
-  !showPurchaseModal &&
-  !showConfirmModal &&
-  !purchasing &&
-  !showSuccessModal && (
-
-        <div className="detail-overlay" onClick={() => setSelectedGift(null)}>
-          <div className="detail-modal" onClick={(e) => e.stopPropagation()}>
-            <button className="detail-close-btn" onClick={() => setSelectedGift(null)}>×</button>
-            <div className="detail-top">
-              <div className="gift-image-large">
-                <img src={selectedGift.photo} alt={selectedGift.nft_id} />
+        !showPurchaseModal &&
+        !showConfirmModal &&
+        !purchasing &&
+        !showSuccessModal && (
+          <div className="detail-overlay" onClick={() => setSelectedGift(null)}>
+            <div className="detail-modal" onClick={(e) => e.stopPropagation()}>
+              <button className="detail-close-btn" onClick={() => setSelectedGift(null)}>×</button>
+              <div className="detail-top">
+                <div className="gift-image-large">
+                  <img src={selectedGift.photo} alt={selectedGift.nft_id} />
+                </div>
+                <div className="detail-right">
+                  <h3 className="detail-name"><span>{selectedGift.nft_id}</span></h3>
+                  <div className="detail-info">
+                    <p><b>Model:</b> {selectedGift.model}</p>
+                    <p><b>Symbol:</b> {selectedGift.symbol}</p>
+                    <p><b>Backdrop:</b> {selectedGift.backdrop}</p>
+                    <p><b>Sana:</b> {selectedGift.created_at}</p>
+                    <p><b>Narx:</b> {Number(selectedGift.price).toLocaleString()} so'm</p>
+                  </div>
+                </div>
               </div>
-              <div className="detail-right">
-                <h3 className="detail-name"><span>{selectedGift.nft_id}</span></h3>
-                <div className="detail-info">
-                  <p><b>Model:</b> {selectedGift.model}</p>
-                  <p><b>Symbol:</b> {selectedGift.symbol}</p>
-                  <p><b>Backdrop:</b> {selectedGift.backdrop}</p>
-                  <p><b>Sana:</b> {selectedGift.created_at}</p>
-                  <p><b>Narx:</b> {Number(selectedGift.price).toLocaleString()} so'm</p>
+              <div className="detail-bottom">
+                <button className="balance-btn" onClick={(e) => handleBuyClick(selectedGift, e)}>
+                  Sotib olish
+                </button>
+                <div className="detail-actions">
+                  <a href={selectedGift.link} target="_blank" rel="noreferrer" className="action-btn">
+                    👀
+                  </a>
                 </div>
               </div>
             </div>
-            <div className="detail-bottom">
-              <button className="balance-btn" onClick={(e) => handleBuyClick(selectedGift, e)}>
-                Sotib olish
-              </button>
-              <div className="detail-actions">
-                <a href={selectedGift.link} target="_blank" rel="noreferrer" className="action-btn">
-                  👀
-                </a>
-              </div>
-            </div>
           </div>
-        </div>
-      )}
+        )}
 
       {/* PURCHASE MODAL */}
       {showPurchaseModal && selectedGift && (
@@ -283,20 +290,16 @@ const Market = ({ onClose }) => {
             <button className="detail-close-btn" onClick={() => !purchasing && setShowPurchaseModal(false)}>
               ×
             </button>
-
             <h2 className="purchase-title">🎁 Gift sotib olish</h2>
-
             <div className="purchase-content">
               <div className="gift-preview">
                 <img src={selectedGift.photo} alt={selectedGift.nft_id} />
                 <p className="gift-name">{selectedGift.nft_id}</p>
               </div>
-
               <div className="purchase-details">
                 <p>Narx: <strong>{Number(selectedGift.price).toLocaleString()} so'm</strong></p>
                 <p>Balansingiz: <strong>{Number(apiUser?.balance || 0).toLocaleString()} so'm</strong></p>
               </div>
-
               <div className="tg-user-section">
                 <div className="tg-user-header">
                   <div className="tg-user-title">Kimga yuboramiz?</div>
@@ -304,8 +307,6 @@ const Market = ({ onClose }) => {
                     O‘zimga
                   </button>
                 </div>
-
-                {/* INPUT yoki CHIP */}
                 {checking || !recipient.trim() || !userInfo ? (
                   <input
                     className="tg-user-input"
@@ -328,9 +329,7 @@ const Market = ({ onClose }) => {
                   </div>
                 )}
               </div>
-
               {purchaseError && <div className="error-message">❌ {purchaseError}</div>}
-
               <button
                 className="confirm-purchase-btn"
                 onClick={handleConfirmClick}
@@ -343,7 +342,7 @@ const Market = ({ onClose }) => {
         </div>
       )}
 
-      {/* CONFIRMATION MODAL */}
+      {/* CONFIRM MODAL */}
       {showConfirmModal && selectedGift && (
         <div className="confirm-overlay">
           <div className="confirm-modal">
@@ -355,18 +354,10 @@ const Market = ({ onClose }) => {
               Qabul qiluvchi: @{userInfo?.username || recipient.replace("@", "")}
             </p>
             <div className="confirm-buttons">
-              <button
-                className="confirm-no"
-                onClick={() => setShowConfirmModal(false)}
-                disabled={purchasing}
-              >
+              <button className="confirm-no" onClick={() => setShowConfirmModal(false)} disabled={purchasing}>
                 Yo‘q
               </button>
-              <button
-                className="confirm-yes"
-                onClick={confirmAndPurchase}
-                disabled={purchasing}
-              >
+              <button className="confirm-yes" onClick={confirmAndPurchase} disabled={purchasing}>
                 Ha, sotib olaman
               </button>
             </div>
