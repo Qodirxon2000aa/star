@@ -1,7 +1,7 @@
 /* ================= OVERLAY ================= */
 .market-overlay {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
   inset: 0;
   background: rgba(0,0,0,0.7);
   display: flex;
@@ -19,12 +19,12 @@
   overflow-y: auto;
   padding: 18px;
   color: #fff;
-  animation: scaleIn .25s ease;
+  animation: scaleIn 0.25s ease;
 }
 
 @keyframes scaleIn {
-  from { transform: scale(.92); opacity: 0 }
-  to { transform: scale(1); opacity: 1 }
+  from { transform: scale(0.92); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 
 .market-close-btn {
@@ -56,26 +56,24 @@
 }
 
 /* ================= GRID (IMPORTANT) ================= */
-/* 🔥 QAT'IY 2x2 MOBILE GRID */
 .gifts-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 14px;
- 
 }
 
 /* ================= CARD ================= */
 .gift-card {
+  height: 280px !important;
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform .25s ease, box-shadow .25s ease;
-  
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .gift-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 14px 36px rgba(0,0,0,.5);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.5);
 }
 
 /* ================= IMAGE ================= */
@@ -95,14 +93,11 @@
 
 /* ================= INFO ================= */
 .gift-info {
-  position: relative;
+    height: 150px;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 8px;
- -webkit-box-shadow: 6px 11px 35px 15px rgba(34, 60, 80, 0.2);
--moz-box-shadow: 6px 11px 35px 15px rgba(34, 60, 80, 0.2);
-box-shadow: 6px 11px 35px 15px rgba(34, 60, 80, 0.2);
+  box-shadow: 6px 11px 35px 15px rgba(34, 60, 80, 0.2);
 }
 
 .gift-name {
@@ -117,85 +112,24 @@ box-shadow: 6px 11px 35px 15px rgba(34, 60, 80, 0.2);
   color: #fff;
 }
 
-/* ================= BUY BUTTON ================= */
-
-
 /* ================= COLOR PRESETS ================= */
 .blue-bg   { background: linear-gradient(#3a4d6a, #2b3a55); }
 .gray-bg   { background: linear-gradient(#4a4d50, #3a3d40); }
 .purple-bg { background: linear-gradient(#6a4d8a, #5a3d7a); }
 
-
 /* ================= DETAIL OVERLAY ================= */
 .detail-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.75);
+  background: rgba(0,0,0,0.6);
   backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2000;
-  animation: fadeIn .25s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0 }
-  to { opacity: 1 }
 }
 
 /* ================= DETAIL MODAL ================= */
-
-/* ================= OVERLAY ================= */
-.detail-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.65);
-  backdrop-filter: blur(6px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-}
-
-/* ================= MODAL ================= */
-.detail-modal {
-  position: relative;
-  width: 92%;
-  max-width: 520px;
-  min-height: 260px;
-  background: #0f0f10;
-  border-radius: 28px;
-  padding: 22px;
-  color: #fff;
-  box-shadow: 0 30px 80px rgba(0,0,0,.85);
-  animation: scaleUp .25s ease;
-  display: grid;
-  grid-template-columns: 150px 1fr;
-  gap: 18px;
-}
-
-@keyframes scaleUp {
-  from { transform: scale(.92); opacity: 0 }
-  to { transform: scale(1); opacity: 1 }
-}
-
-/* ================= CLOSE ================= */
-
-
-/* OVERLAY */
-.detail-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.6);
-  backdrop-filter: blur(6px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-}
-
-/* MODAL */
 .detail-modal {
   position: relative;
   width: 92%;
@@ -205,12 +139,11 @@ box-shadow: 6px 11px 35px 15px rgba(34, 60, 80, 0.2);
   border-radius: 28px;
   padding: 18px;
   color: #fff;
-  box-shadow: 0 20px 60px rgba(0,0,0,.8);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.8);
   display: flex;
   flex-direction: column;
 }
 
-/* CLOSE */
 .detail-close-btn {
   position: absolute;
   top: 14px;
@@ -271,10 +204,8 @@ box-shadow: 6px 11px 35px 15px rgba(34, 60, 80, 0.2);
   line-height: 1.6;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: left;
+  align-items: flex-start;
 }
-
 
 .detail-info b {
   color: #8c8c8c;
@@ -289,7 +220,7 @@ box-shadow: 6px 11px 35px 15px rgba(34, 60, 80, 0.2);
   margin-top: 10px;
 }
 
-/* BUY */
+/* BUY BUTTON (detail ichidagi asosiy tugma) */
 .balance-btn {
   flex: 1;
   height: 44px;
@@ -323,211 +254,110 @@ box-shadow: 6px 11px 35px 15px rgba(34, 60, 80, 0.2);
   text-decoration: none;
 }
 
-
-/* ================= 📱 KICHIK TELEFONLAR ================= */
-@media (max-width: 420px) {
-
-  .gift-name {
-    font-size: 13px;
-  }
-
-  .gift-price {
-    font-size: 13px;
-  }
-
-  .buy-btn {
-    font-size: 16px;
-  }
-
-  .filter-select,
-  .sort-select {
-    font-size: 13px;
-  }
-
-  .detail-name {
-    font-size: 18px;
-  }
-
-  .detail-info {
-    font-size: 13px;
-  }
-
-  .balance-btn {
-    font-size: 14px;
-  }
-
-  .action-btn {
-    font-size: 18px;
-  }
+/* ================= QO'SHIMCHA CLASSLAR ================= */
+.column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
 }
 
-
-/* ================= 📱 JUDA TOR EKRANLAR ================= */
-@media (max-width: 360px) {
-    
-
-  .gift-name {
-    font-size: 12px;
-  }
-
-  .gift-price {
-    font-size: 12px;
-  }
-
-  .buy-btn {
-    font-size: 15px;
-  }
-
-  .filter-select,
-  .sort-select {
-    font-size: 12px;
-  }
-
-  .detail-name {
-    font-size: 16px;
-  }
-
-  .detail-info {
-    font-size: 12px;
-    line-height: 1.4;
-  }
-
-  .balance-btn {
-    font-size: 13px;
-  }
-
-  .action-btn {
-    font-size: 17px;
-  }
-}
-
-
-/* ================= 📱 KICHIK TELEFONLAR ================= */
-@media (max-width: 420px) {
-
-  /* INPUT / SELECT */
-  input,
-  select,
-  textarea {
-    font-size: 13px;
-  }
-
-  .filter-select,
-  .sort-select {
-    font-size: 13px;
-  }
-
-  /* GIFTS */
-  .gift-name {
-    font-size: 13px;
-  }
-
-  .gift-price {
-    font-size: 13px;
-  }
-
-  .buy-btn {
-    font-size: 16px;
-  }
-
-  /* DETAIL */
-  .detail-name {
-    font-size: 18px;
-  }
-
-  .detail-info {
-    font-size: 13px;
-  }
-
-  .balance-btn {
-    font-size: 14px;
-  }
-
-  .action-btn {
-    font-size: 18px;
-  }
-}
-
-
-/* ================= 📱 JUDA TOR EKRANLAR ================= */
-@media (max-width: 360px) {
-
-  /* INPUT / SELECT */
-  input,
-  select,
-  textarea {
-    font-size: 12px;
-  }
-
-  .filter-select,
-  .sort-select {
-    font-size: 12px;
-  }
-
-  /* GIFTS */
-  .gift-name {
-    font-size: 12px;
-  }
-
-  .gift-price {
-    font-size: 12px;
-  }
-
-  .buy-btn {
-    font-size: 15px;
-  }
-
-  /* DETAIL */
-  .detail-name {
-    font-size: 16px;
-  }
-
-  .detail-info {
-    font-size: 12px;
-    line-height: 1.4;
-  }
-
-  .balance-btn {
-    font-size: 13px;
-  }
-
-  .action-btn {
-    font-size: 17px;
-  }
-}
-
-.column{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-}
+/* Asosiy .buuy tugmasi (kartalarda yoki boshqa joylarda ishlatiladigan) */
 .buuy {
-    padding: 8px 30px;
-    background: #2aa9ff;
-    color: #fff;
-    font-size: 18px;
-    border-radius: 14px;
+  padding: 8px 30px;
+  background: #2aa9ff;
+  color: #fff;
+  font-size: 18px;
+  border-radius: 14px;
+  cursor: pointer;
+  min-height: 44px; /* Kichik ekranlarda ham buzilmasligi uchun */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .buuy:hover {
-    color: #0f0f10;
-    background: white;
+  color:  color: #0f0f10;
+  background: white;
 }
 
+/* ================= MOBILE MEDIA QUERIES ================= */
 @media (max-width: 420px) {
-    .buuy {
-        padding: 6px 20px;
-        font-size: 16px;
-        border-radius: 12px;
-    }
+  input, select, textarea,
+  .filter-select, .sort-select {
+    font-size: 13px;
+  }
+
+  .gift-name, .gift-price {
+    font-size: 13px;
+  }
+
+  .detail-name {
+    font-size: 18px;
+  }
+
+  .detail-info {
+    font-size: 13px;
+  }
+
+  /* Buttonlar uchun to'g'ri o'lchamlar */
+  .buuy,
+  .buy-btn {
+    padding: 8px 20px;
+    font-size: 16px;
+    border-radius: 12px;
+    min-height: 42px;
+  }
+
+  .balance-btn {
+    font-size: 14px;
+    height: 42px;
+  }
+
+  .action-btn {
+    width: 42px;
+    height: 42px;
+    font-size: 18px;
+  }
 }
 
 @media (max-width: 360px) {
-    .buuy {
-        padding: 5px 15px;
-        font-size: 15px;
-        border-radius: 10px;
-    }
+  input, select, textarea,
+  .filter-select, .sort-select {
+    font-size: 12px;
+  }
+
+  .gift-name, .gift-price {
+    font-size: 12px;
+  }
+
+  .detail-name {
+    font-size: 16px;
+  }
+
+  .detail-info {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  /* Juda kichik ekranlarda ham buttonlar buzilmaydi */
+  .buuy,
+  .buy-btn {
+    padding: 7px 16px;
+    font-size: 15px;
+    border-radius: 10px;
+    min-height: 40px;
+  }
+
+  .balance-btn {
+    font-size: 13px;
+    height: 40px;
+  }
+
+  .action-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 17px;
+  }
 }
