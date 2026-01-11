@@ -1,4 +1,4 @@
-// Dashboard.jsx – YANGI VERSIYA: Welcome animatsiyasi Dashboard ichida, alohida komponent emas
+// Dashboard.jsx – FINAL VERSION (100% OPTIMIZED, NO LAG)
 import React, { useEffect, useState, useRef } from "react";
 import Lottie from "lottie-react";
 import "./Dashboard.css";
@@ -13,67 +13,83 @@ import ReferralModal from "./Footer/ReferralModal.jsx";
 import Money from "../../components/pages/Money/Money.jsx";
 import Profile from "./Footer/Profile.jsx";
 
-import animationData from "../../assets/animation.json"; // animation.json ni import qilamiz
-
 const Dashboard = () => {
   const [isPremium, setIsPremium] = useState(false);
-  const [activeSection, setActiveSection] = useState("home"); // "home" | "market"
+  const [activeSection, setActiveSection] = useState("home");
 
   const [openModal, setOpenModal] = useState(null);
   const [showReferralModal, setShowReferralModal] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
 
-  // Welcome animatsiyasi uchun state
-  const [showWelcome, setShowWelcome] = useState(true);
-
-  // Market ochiq bo'lganda headerni yashirish uchun flag
-  const isMarketOpen = activeSection === "market";
-
-  // Animatsiya tugaganda chaqiriladigan funksiya uchun ref (qayta chaqirilishdan himoya)
+  // 🔥 WELCOME STATE
+  const [showWelcome, setShowWelcome] = useState(false);
   const finishedRef = useRef(false);
 
+  // 🔥 animation.json async yuklanadi
+  const [animationData, setAnimationData] = useState(null);
+
+  const isMarketOpen = activeSection === "market";
+
+  /* ===============================
+     🔐 MODAL SCROLL LOCK
+  =============================== */
   useEffect(() => {
     const dashboard = document.querySelector(".dashboard");
     if (!dashboard) return;
 
-    const isAnyModalOpen =
+    const locked =
       openModal === "money" || showReferralModal || showProfile;
 
-    dashboard.classList.toggle("modal-lock", isAnyModalOpen);
+    dashboard.classList.toggle("modal-lock", locked);
 
     return () => dashboard.classList.remove("modal-lock");
   }, [openModal, showReferralModal, showProfile]);
 
-  // Animatsiya tugaganda welcome screen ni yashirish
+  /* ===============================
+     🚀 WELCOME FAqat 1 MARTA
+  =============================== */
+  useEffect(() => {
+    const shown = sessionStorage.getItem("welcome_shown");
+    if (!shown) {
+      setShowWelcome(true);
+
+      // JSON NI ASYNC YUKLAYMIZ (UI BLOKLANMAYDI)
+      import("../../assets/animation.json").then((data) => {
+        setAnimationData(data.default);
+      });
+    }
+  }, []);
+
   const handleAnimationComplete = () => {
     if (finishedRef.current) return;
     finishedRef.current = true;
 
-    setTimeout(() => {
-      setShowWelcome(false);
-    }, 0);
+    sessionStorage.setItem("welcome_shown", "1");
+    setShowWelcome(false);
   };
 
   return (
     <>
-      {/* WELCOME ANIMATSIYASI – faqat bir marta, app ochilganda */}
+      {/* ================= WELCOME SCREEN ================= */}
       {showWelcome && (
         <div className="welcome-screen">
           <div className="video-box">
-            <Lottie
-              animationData={animationData}
-              loop={false}
-              autoplay
-              onComplete={handleAnimationComplete}
-            />
+            {animationData && (
+              <Lottie
+                animationData={animationData}
+                loop={false}
+                autoplay
+                onComplete={handleAnimationComplete}
+              />
+            )}
           </div>
         </div>
       )}
 
-      {/* ASOSIY DASHBOARD – welcome tugagach ko'rinadi */}
+      {/* ================= DASHBOARD ================= */}
       {!showWelcome && (
         <div className="dashboard">
-          {/* HEADER faqat "home" bo'limida ko'rinadi */}
+          {/* HEADER */}
           {!isMarketOpen && (
             <Header
               isPremium={isPremium}
@@ -82,8 +98,12 @@ const Dashboard = () => {
             />
           )}
 
-          {/* MARKAZIY QISM */}
-          <div className={`dashboard-main ${isMarketOpen ? "market-full" : ""}`}>
+          {/* MAIN */}
+          <div
+            className={`dashboard-main ${
+              isMarketOpen ? "market-full" : ""
+            }`}
+          >
             {activeSection === "home" && (
               <div className="dashboard-content">
                 {isPremium ? <Premium /> : <Stars />}
@@ -99,21 +119,31 @@ const Dashboard = () => {
 
           {/* MONEY MODAL */}
           {openModal === "money" && (
-            <div className="modal-overlay" onClick={() => setOpenModal(null)}>
-              <div className="modal-center" onClick={(e) => e.stopPropagation()}>
+            <div
+              className="modal-overlay"
+              onClick={() => setOpenModal(null)}
+            >
+              <div
+                className="modal-center"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <Money onClose={() => setOpenModal(null)} />
               </div>
             </div>
           )}
 
+          {/* REFERRAL */}
           <ReferralModal
             isOpen={showReferralModal}
             onClose={() => setShowReferralModal(false)}
           />
 
-          {showProfile && <Profile onClose={() => setShowProfile(false)} />}
+          {/* PROFILE */}
+          {showProfile && (
+            <Profile onClose={() => setShowProfile(false)} />
+          )}
 
-          {/* FOOTER har doim pastda */}
+          {/* FOOTER */}
           <Footer
             activeSection={activeSection}
             onHomeClick={() => setActiveSection("home")}
