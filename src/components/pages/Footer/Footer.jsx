@@ -1,6 +1,9 @@
-// Footer.jsx – To'g'ri active holat bilan
+// Footer.jsx – react-icons bilan
 import React from "react";
 import "./Footer.css";
+
+import { MdStorefront } from "react-icons/md";
+import { FiHome, FiUser, FiUserPlus } from "react-icons/fi";
 
 const Footer = ({
   activeSection,
@@ -12,21 +15,22 @@ const Footer = ({
   return (
     <div className="footer">
       <div className="footer-content">
-        {/* 🔗 Taklif qilish */}
+
+        {/* 🔗 Taklif */}
         <button
-          className={`footer-item ${activeSection === "home" ? "active" : ""}`}
+          className={`footer-item ${activeSection === "invite" ? "active" : ""}`}
           onClick={onInviteClick}
         >
-          <div className="footer-icon invite-icon" />
-          <span>Taklif qilish</span>
+          <FiUserPlus className="footer-icon" />
+          <span>Taklif</span>
         </button>
 
-        {/* 🏠 Asosiy (Stars / Premium) */}
+        {/* 🏠 Asosiy */}
         <button
           className={`footer-item ${activeSection === "home" ? "active" : ""}`}
           onClick={onHomeClick}
         >
-          <div className="footer-icon home-icon" /> {/* ikonani moslashtiring */}
+          <FiHome className="footer-icon" />
           <span>Asosiy</span>
         </button>
 
@@ -35,18 +39,19 @@ const Footer = ({
           className={`footer-item ${activeSection === "market" ? "active" : ""}`}
           onClick={onMarketClick}
         >
-          <div className="footer-icon market-icon" /> {/* ikonani moslashtiring */}
+          <MdStorefront className="footer-icon" />
           <span>Market</span>
         </button>
 
-        {/* 👤 Profil (agar footerda bo'lsa) */}
+        {/* 👤 Profil */}
         <button
           className={`footer-item ${activeSection === "profile" ? "active" : ""}`}
           onClick={onProfileClick}
         >
-          <div className="footer-icon profile-icon" />
+          <FiUser className="footer-icon" />
           <span>Profil</span>
         </button>
+
       </div>
     </div>
   );

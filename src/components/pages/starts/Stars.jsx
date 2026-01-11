@@ -213,7 +213,7 @@ const Stars = () => {
         </div>
 
         <button
-          className="buy-btn"
+          className="buy-btn1"
           disabled={sending || !userInfo || !amount}
           onClick={handleSubmit}
         >
