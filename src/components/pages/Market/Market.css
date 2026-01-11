@@ -277,10 +277,7 @@
   justify-content: center;
 }
 
-.buuy:hover {
-  color:  color: #0f0f10;
-  background: white;
-}
+
 
 /* ================= MOBILE MEDIA QUERIES ================= */
 @media (max-width: 420px) {
