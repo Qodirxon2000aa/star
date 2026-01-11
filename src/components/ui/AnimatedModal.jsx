@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import "./AnimatedModal.css";
 
 const CONFIG = {
-  success: { icon: "✦", label: "SUCCESS" },
-  error: { icon: "✖", label: "ERROR" },
-  warning: { icon: "⚠", label: "WARNING" },
-  info: { icon: "ℹ", label: "INFO" },
+  success: { icon: "✓", label: "Success" },
+  error: { icon: "✕", label: "Error" },
+  warning: { icon: "!", label: "Warning" },
+  info: { icon: "i", label: "Info" },
 };
 
 const AnimatedModal = ({
@@ -16,41 +16,37 @@ const AnimatedModal = ({
   onClose,
   small = false,
 }) => {
-  const [show, setShow] = useState(open);
+  const [visible, setVisible] = useState(open);
 
   useEffect(() => {
-    if (open) setShow(true);
+    if (open) setVisible(true);
   }, [open]);
 
   const close = () => {
-    setShow(false);
-    setTimeout(onClose, 500);
+    setVisible(false);
+    setTimeout(onClose, 250);
   };
 
-  if (!open && !show) return null;
+  if (!open && !visible) return null;
 
   return (
-    <div className="cx-overlay" onClick={close}>
+    <div className="am-overlay" onClick={close}>
       <div
-        className={`cx-modal ${type} ${open ? "cx-in" : "cx-out"} ${
-          small ? "cx-toast" : ""
+        className={`am-modal ${type} ${open ? "am-in" : "am-out"} ${
+          small ? "am-toast" : ""
         }`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Neon Ring */}
-        <div className="cx-ring" />
+        <div className="am-icon">{CONFIG[type].icon}</div>
 
-        {/* Icon */}
-        <div className="cx-icon">{CONFIG[type].icon}</div>
+        {!small && <div className="am-label">{CONFIG[type].label}</div>}
 
-        {!small && <div className="cx-label">{CONFIG[type].label}</div>}
+        {title && !small && <h3 className="am-title">{title}</h3>}
 
-        {title && !small && <h2 className="cx-title">{title}</h2>}
-
-        <p className="cx-message">{message}</p>
+        <p className="am-message">{message}</p>
 
         {!small && (
-          <button className="cx-btn" onClick={close}>
+          <button className="am-btn" onClick={close}>
             Yopish
           </button>
         )}

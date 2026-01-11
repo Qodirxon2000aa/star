@@ -16,20 +16,10 @@ import WelcomeAnimation from "../WelcomeAnimation.jsx";
 const Dashboard = () => {
   const [isPremium, setIsPremium] = useState(false);
   const [openModal, setOpenModal] = useState(null);
-
   const [activeTab, setActiveTab] = useState("home");
   const [showReferralModal, setShowReferralModal] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
 
-  // 🔥 INTRO STATE
-  const [showIntro, setShowIntro] = useState(true);
-
-  const handleInviteClick = () => {
-    setActiveTab("invite");
-    setShowReferralModal(true);
-  };
-
-  // 🔒 SCROLL LOCK — FAFAQAT DASHBOARD
   useEffect(() => {
     const dashboard = document.querySelector(".dashboard");
     if (!dashboard) return;
@@ -37,21 +27,10 @@ const Dashboard = () => {
     const isAnyModalOpen =
       openModal === "money" || showReferralModal || showProfile;
 
-    if (isAnyModalOpen) {
-      dashboard.classList.add("modal-lock");
-    } else {
-      dashboard.classList.remove("modal-lock");
-    }
+    dashboard.classList.toggle("modal-lock", isAnyModalOpen);
 
-    return () => {
-      dashboard.classList.remove("modal-lock");
-    };
+    return () => dashboard.classList.remove("modal-lock");
   }, [openModal, showReferralModal, showProfile]);
-
-  // 🔥 AGAR INTRO BO‘LSA — FAQAT VIDEO
-  if (showIntro) {
-    return <WelcomeAnimation onFinish={() => setShowIntro(false)} />;
-  }
 
   return (
     <div className="dashboard">
@@ -65,7 +44,6 @@ const Dashboard = () => {
         {isPremium ? <Premium /> : <Stars />}
       </div>
 
-      {/* 💰 MONEY */}
       {openModal === "money" && (
         <div className="modal-overlay" onClick={() => setOpenModal(null)}>
           <div className="modal-center" onClick={(e) => e.stopPropagation()}>
@@ -74,21 +52,20 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* 🤝 REFERRAL */}
       <ReferralModal
         isOpen={showReferralModal}
         onClose={() => setShowReferralModal(false)}
       />
 
-      {/* 👤 PROFILE */}
-      {showProfile && (
-        <Profile onClose={() => setShowProfile(false)} />
-      )}
+      {showProfile && <Profile onClose={() => setShowProfile(false)} />}
 
       <Footer
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        onInviteClick={handleInviteClick}
+        onInviteClick={() => {
+          setActiveTab("invite");
+          setShowReferralModal(true);
+        }}
         onProfileClick={() => setShowProfile(true)}
       />
     </div>
@@ -96,3 +73,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+

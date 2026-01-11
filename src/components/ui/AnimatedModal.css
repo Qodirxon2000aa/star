@@ -1,194 +1,118 @@
-/* =========================
-   OVERLAY
-========================= */
-.cx-overlay {
+/* OVERLAY */
+.am-overlay {
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at top, #000000aa, #000000f2);
-  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 99999;
 }
 
-/* =========================
-   MODAL BASE
-========================= */
-.cx-modal {
-  position: relative;
-  width: 92%;
-  max-width: 380px;
-  padding: 32px 26px 28px;
-  border-radius: 26px;
-  background: linear-gradient(160deg, #0f0f14, #181825);
+/* MODAL */
+.am-modal {
+  width: 90%;
+  max-width: 360px;
+  padding: 26px 24px 24px;
+  border-radius: 20px;
+  background: #111;
   color: #fff;
   text-align: center;
-  overflow: hidden;
-  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
 }
 
-/* =========================
-   NEON RING
-========================= */
-.cx-ring {
-  position: absolute;
-  inset: -2px;
-  border-radius: 28px;
-  background: linear-gradient(
-    120deg,
-    transparent,
-    rgba(255, 255, 255, 0.15),
-    transparent
-  );
-  animation: ringMove 3s linear infinite;
-  pointer-events: none;
+/* ICON */
+.am-icon {
+  font-size: 34px;
+  margin-bottom: 8px;
+  opacity: 0.9;
 }
 
-/* =========================
-   ICON
-========================= */
-.cx-icon {
-  font-size: 42px;
-  margin-bottom: 10px;
-  animation: iconPop 0.8s cubic-bezier(0.2, 1.4, 0.4, 1);
-}
-
-/* =========================
-   LABEL
-========================= */
-.cx-label {
+/* LABEL */
+.am-label {
   font-size: 11px;
-  letter-spacing: 3px;
-  opacity: 0.6;
+  letter-spacing: 2px;
+  opacity: 0.5;
   margin-bottom: 6px;
 }
 
-/* =========================
-   TEXT
-========================= */
-.cx-title {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-
-.cx-message {
-  font-size: 15px;
-  line-height: 1.5;
-  color: #d6d6d6;
-}
-
-/* =========================
-   BUTTON
-========================= */
-.cx-btn {
-  margin-top: 22px;
-  height: 46px;
-  width: 100%;
-  border-radius: 16px;
-  border: none;
+/* TITLE */
+.am-title {
+  font-size: 18px;
   font-weight: 600;
-  font-size: 15px;
-  color: #000;
-  background: linear-gradient(135deg, #ffffff, #cfcfcf);
+  margin-bottom: 6px;
+}
+
+/* MESSAGE */
+.am-message {
+  font-size: 14px;
+  line-height: 1.5;
+  color: black;
+}
+
+/* BUTTON */
+.am-btn {
+  margin-top: 18px;
+  height: 44px;
+  width: 100%;
+  border-radius: 14px;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
+  background: #fff;
+  color: #000;
 }
 
-.cx-btn:active {
-  transform: scale(0.96);
+.am-btn:active {
+  transform: scale(0.97);
 }
 
-/* =========================
-   TYPES
-========================= */
-.success {
-  --accent: #2aff9e;
-}
-.error {
-  --accent: #ff4b4b;
-}
-.warning {
-  --accent: #ffb020;
-}
-.info {
-  --accent: #3fa9ff;
+/* TYPES (FAINT ACCENT ONLY) */
+.success { --accent: #353839; }
+.error   { --accent: #ff5c5c; }
+.warning { --accent: #f5a623; }
+.info    { --accent: #4da3ff; }
+
+.am-icon {
+  color: var(--accent);
 }
 
-.cx-modal::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    circle at top,
-    var(--accent),
-    transparent 60%
-  );
-  opacity: 0.25;
-  pointer-events: none;
+/* TOAST */
+.am-toast {
+  padding: 18px 20px;
 }
 
-/* =========================
-   TOAST MODE
-========================= */
-.cx-toast {
-  padding: 20px 22px;
-}
-
-.cx-toast .cx-title,
-.cx-toast .cx-label,
-.cx-toast .cx-btn {
+.am-toast .am-label,
+.am-toast .am-title,
+.am-toast .am-btn {
   display: none;
 }
 
-/* =========================
-   ANIMATIONS
-========================= */
-.cx-in {
-  animation: modalIn 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+/* ANIMATIONS (VERY SOFT) */
+.am-in {
+  animation: fadeIn 0.25s ease-out;
 }
 
-.cx-out {
-  animation: modalOut 0.4s ease forwards;
+.am-out {
+  animation: fadeOut 0.2s ease-in forwards;
 }
 
-@keyframes modalIn {
+@keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(80px) scale(0.8) rotateX(15deg);
+    transform: scale(0.96);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1) rotateX(0);
+    transform: scale(1);
   }
 }
 
-@keyframes modalOut {
+@keyframes fadeOut {
   to {
     opacity: 0;
-    transform: translateY(40px) scale(0.9);
-  }
-}
-
-@keyframes ringMove {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes iconPop {
-  0% {
-    transform: scale(0) rotate(-180deg);
-    opacity: 0;
-  }
-  70% {
-    transform: scale(1.2) rotate(10deg);
-  }
-  100% {
-    transform: scale(1) rotate(0);
-    opacity: 1;
+    transform: scale(0.97);
   }
 }
