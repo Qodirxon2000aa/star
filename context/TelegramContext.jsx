@@ -9,10 +9,7 @@ export const TelegramProvider = ({ children }) => {
   const [orders, setOrders] = useState([]);
   const [payments, setPayments] = useState([]);
 
-  // 🔥 loading faqat USER uchun
   const [loading, setLoading] = useState(true);
-
-  // 🔒 duplicate fetch oldini olish
   const fetchedRef = useRef(false);
 
   /* =========================
@@ -52,47 +49,35 @@ export const TelegramProvider = ({ children }) => {
   };
 
   /* =========================
-     📦 ORDERS (LAZY)
+     📦 ORDERS
   ========================= */
   const fetchOrders = async (userId, isTelegram = true) => {
     try {
       const actualUserId = !isTelegram ? "7521806735" : userId;
       const url = `https://m4746.myxvest.ru/webapp/history.php?user_id=${actualUserId}`;
 
-      const res = await fetch(url, {
-        headers: { Accept: "application/json" },
-        cache: "no-cache",
-      });
-
-      if (!res.ok) throw new Error("Orders error");
-
+      const res = await fetch(url);
       const data = await res.json();
+
       setOrders(data.ok && Array.isArray(data.orders) ? data.orders : []);
-    } catch (err) {
-      console.error("❌ fetchOrders:", err.message);
+    } catch {
       setOrders([]);
     }
   };
 
   /* =========================
-     💳 PAYMENTS (LAZY)
+     💳 PAYMENTS
   ========================= */
   const fetchPayments = async (userId, isTelegram = true) => {
     try {
       const actualUserId = !isTelegram ? "7521806735" : userId;
       const url = `https://m4746.myxvest.ru/webapp/payments.php?user_id=${actualUserId}`;
 
-      const res = await fetch(url, {
-        headers: { Accept: "application/json" },
-        cache: "no-cache",
-      });
-
-      if (!res.ok) throw new Error("Payments error");
-
+      const res = await fetch(url);
       const data = await res.json();
+
       setPayments(data.ok && Array.isArray(data.payments) ? data.payments : []);
-    } catch (err) {
-      console.error("❌ fetchPayments:", err.message);
+    } catch {
       setPayments([]);
     }
   };
@@ -102,9 +87,8 @@ export const TelegramProvider = ({ children }) => {
   ========================= */
   const createOrder = async ({ amount, sent, type, overall }) => {
     try {
-      if (!user?.id) throw new Error("User ID yo‘q");
-
       const uid = user.isTelegram ? user.id : "7521806735";
+
       const url =
         `https://m4746.myxvest.ru/webapp/order.php` +
         `?user_id=${uid}&amount=${amount}&sent=@${sent.replace("@", "")}` +
@@ -118,10 +102,9 @@ export const TelegramProvider = ({ children }) => {
         return { ok: true };
       }
 
-      return { ok: false, message: "Order saqlanmadi" };
-    } catch (err) {
-      console.error("❌ createOrder:", err.message);
-      return { ok: false, message: err.message };
+      return { ok: false };
+    } catch {
+      return { ok: false };
     }
   };
 
@@ -130,9 +113,8 @@ export const TelegramProvider = ({ children }) => {
   ========================= */
   const createPremiumOrder = async ({ months, sent, overall }) => {
     try {
-      if (!user?.id) throw new Error("User ID yo‘q");
-
       const uid = user.isTelegram ? user.id : "7521806735";
+
       const url =
         `https://m4746.myxvest.ru/webapp/premium.php` +
         `?user_id=${uid}&amount=${months}&sent=${sent.replace("@", "")}` +
@@ -147,14 +129,50 @@ export const TelegramProvider = ({ children }) => {
       }
 
       return { ok: false, message: data.message };
-    } catch (err) {
-      console.error("❌ createPremiumOrder:", err.message);
-      return { ok: false, message: err.message };
+    } catch (e) {
+      return { ok: false, message: e.message };
     }
   };
 
   /* =========================
-     🔄 REFRESH (YENGIL)
+     🎁 GIFT ORDER (YANGI)
+  ========================= */
+  const createGiftOrder = async ({ giftId, sent, price }) => {
+    try {
+      if (!user?.id) throw new Error("User yo‘q");
+
+      const uid = user.isTelegram ? user.id : "7521806735";
+      const balance = Number(apiUser?.balance || 0);
+
+      if (balance < price) {
+        return { ok: false, message: "Balans yetarli emas" };
+      }
+
+      const cleanUsername = sent.startsWith("@") ? sent : `@${sent}`;
+
+      const url =
+        `https://m4746.myxvest.ru/webapp/gifting.php` +
+        `?user_id=${uid}` +
+        `&gift_id=${giftId}` +
+        `&sent=${encodeURIComponent(cleanUsername)}`;
+
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (!data?.ok) {
+        return { ok: false, message: data?.message || "Gift xatosi" };
+      }
+
+      await fetchUserFromApi(uid, user.isTelegram);
+
+      return { ok: true, data };
+    } catch (e) {
+      return { ok: false, message: e.message };
+    }
+  };
+
+  /* =========================
+     🔄 REFRESH
   ========================= */
   const refreshUser = async () => {
     if (user?.id) {
@@ -163,7 +181,7 @@ export const TelegramProvider = ({ children }) => {
   };
 
   /* =========================
-     🚀 INIT (BIR MARTA)
+     🚀 INIT
   ========================= */
   useEffect(() => {
     if (fetchedRef.current) return;
@@ -176,30 +194,21 @@ export const TelegramProvider = ({ children }) => {
     const tgUser = tg?.initDataUnsafe?.user;
 
     if (tgUser?.id) {
-      const baseUser = {
+      setUser({
         id: tgUser.id,
         first_name: tgUser.first_name || "",
         last_name: tgUser.last_name || "",
         username: tgUser.username ? `@${tgUser.username}` : "",
-        language_code: tgUser.language_code || "en",
         isTelegram: true,
-        photo_url: tgUser.photo_url || null,
-      };
-
-      setUser(baseUser);
+      });
       fetchUserFromApi(tgUser.id, true);
     } else {
-      // DEV MODE
       const devUser = {
         id: "7521806735",
         first_name: "Dev",
-        last_name: "User",
         username: "@dev_user",
-        language_code: "uz",
         isTelegram: false,
-        photo_url: null,
       };
-
       setUser(devUser);
       fetchUserFromApi(devUser.id, false);
     }
@@ -214,11 +223,11 @@ export const TelegramProvider = ({ children }) => {
         payments,
         loading,
 
-        // 🔥 FUNKSIYALAR SAQLANDI
         fetchOrders,
         fetchPayments,
         createOrder,
         createPremiumOrder,
+        createGiftOrder,
         refreshUser,
       }}
     >

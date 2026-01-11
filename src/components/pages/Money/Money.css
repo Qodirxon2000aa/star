@@ -802,3 +802,67 @@
 
 
 
+/* TELEGRAM USER SECTION - Stars bilan bir xil */
+.tg-user-section {
+  width: 100%;
+  border-radius: 16px;
+  margin-bottom: 14px;
+}
+
+.tg-user-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.tg-user-title {
+  font-size: 13px;
+  color: #aaa;
+}
+
+.tg-user-input {
+  width: 100%;
+  background: #2a2a2d;
+  border: none;
+  border-radius: 14px;
+  padding: 10px 14px;
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.tg-user-chip {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #2a2a2d;
+  border-radius: 18px;
+  padding: 4px 12px;
+  box-sizing: border-box;
+}
+
+.tg-user-info {
+  flex: 1;
+}
+
+.tg-user-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.tg-user-username {
+  font-size: 13px;
+  color: #aaa;
+}
+
+.tg-user-clear {
+  background: none;
+  border: none;
+  color: #777;
+  font-size: 20px;
+  cursor: pointer;
+}
