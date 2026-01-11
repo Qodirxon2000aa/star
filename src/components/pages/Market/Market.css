@@ -329,3 +329,175 @@
   color: #fff;
   text-decoration: none;
 }
+
+
+/* ================= 📱 KICHIK TELEFONLAR ================= */
+@media (max-width: 420px) {
+
+  .gift-name {
+    font-size: 13px;
+  }
+
+  .gift-price {
+    font-size: 13px;
+  }
+
+  .buy-btn {
+    font-size: 16px;
+  }
+
+  .filter-select,
+  .sort-select {
+    font-size: 13px;
+  }
+
+  .detail-name {
+    font-size: 18px;
+  }
+
+  .detail-info {
+    font-size: 13px;
+  }
+
+  .balance-btn {
+    font-size: 14px;
+  }
+
+  .action-btn {
+    font-size: 18px;
+  }
+}
+
+
+/* ================= 📱 JUDA TOR EKRANLAR ================= */
+@media (max-width: 360px) {
+
+  .gift-name {
+    font-size: 12px;
+  }
+
+  .gift-price {
+    font-size: 12px;
+  }
+
+  .buy-btn {
+    font-size: 15px;
+  }
+
+  .filter-select,
+  .sort-select {
+    font-size: 12px;
+  }
+
+  .detail-name {
+    font-size: 16px;
+  }
+
+  .detail-info {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .balance-btn {
+    font-size: 13px;
+  }
+
+  .action-btn {
+    font-size: 17px;
+  }
+}
+
+
+/* ================= 📱 KICHIK TELEFONLAR ================= */
+@media (max-width: 420px) {
+
+  /* INPUT / SELECT */
+  input,
+  select,
+  textarea {
+    font-size: 13px;
+  }
+
+  .filter-select,
+  .sort-select {
+    font-size: 13px;
+  }
+
+  /* GIFTS */
+  .gift-name {
+    font-size: 13px;
+  }
+
+  .gift-price {
+    font-size: 13px;
+  }
+
+  .buy-btn {
+    font-size: 16px;
+  }
+
+  /* DETAIL */
+  .detail-name {
+    font-size: 18px;
+  }
+
+  .detail-info {
+    font-size: 13px;
+  }
+
+  .balance-btn {
+    font-size: 14px;
+  }
+
+  .action-btn {
+    font-size: 18px;
+  }
+}
+
+
+/* ================= 📱 JUDA TOR EKRANLAR ================= */
+@media (max-width: 360px) {
+
+  /* INPUT / SELECT */
+  input,
+  select,
+  textarea {
+    font-size: 12px;
+  }
+
+  .filter-select,
+  .sort-select {
+    font-size: 12px;
+  }
+
+  /* GIFTS */
+  .gift-name {
+    font-size: 12px;
+  }
+
+  .gift-price {
+    font-size: 12px;
+  }
+
+  .buy-btn {
+    font-size: 15px;
+  }
+
+  /* DETAIL */
+  .detail-name {
+    font-size: 16px;
+  }
+
+  .detail-info {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .balance-btn {
+    font-size: 13px;
+  }
+
+  .action-btn {
+    font-size: 17px;
+  }
+}
