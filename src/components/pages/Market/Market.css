@@ -71,7 +71,7 @@
   overflow: hidden;
   cursor: pointer;
   transition: transform .25s ease, box-shadow .25s ease;
-   height: 220px;
+  
 }
 
 .gift-card:hover {
