@@ -199,20 +199,23 @@ export const TelegramProvider = ({ children }) => {
         first_name: tgUser.first_name || "",
         last_name: tgUser.last_name || "",
         username: tgUser.username ? `@${tgUser.username}` : "",
+        photo_url: tgUser.photo_url || null,  // 🔥 Rasm uchun qo'shilgan
         isTelegram: true,
       });
       fetchUserFromApi(tgUser.id, true);
     } else {
+      // dev user uchun ham agar kerak bo'lsa qo'shsa bo'ladi
       const devUser = {
         id: "7521806735",
         first_name: "Dev",
         username: "@dev_user",
+        photo_url: null, // yoki default rasm URL
         isTelegram: false,
       };
       setUser(devUser);
       fetchUserFromApi(devUser.id, false);
     }
-  }, []);
+  }, []); // ✅ To'g'ri yopilgan: dependency array bilan
 
   return (
     <TelegramContext.Provider

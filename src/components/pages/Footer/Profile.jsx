@@ -67,17 +67,29 @@ const Profile = ({ onClose }) => {
           <button className="profile-close" onClick={handleClose}>×</button>
 
           {/* HEADER */}
-          <div className="profile-header">
-            <img
-              src={avatar}
-              className="profile-avatar"
-              alt="avatar"
-              referrerPolicy="no-referrer"
-              onError={(e) => (e.currentTarget.src = "/avatar.png")}
-            />
-            <h2>{fullName}</h2>
-            <p>{username}</p>
-          </div>
+          {/* HEADER */}
+<div className="profile-header">
+  {user?.photo_url ? (
+    <img
+      src={user.photo_url}
+      className="profile-avatar"
+      alt="avatar"
+      referrerPolicy="origin"  // yoki umuman olib tashlang
+      onError={(e) => {
+        console.log("Telegram avatar yuklanmadi, fallback ishlatildi");
+        e.currentTarget.src = "/avatar.png";
+      }}
+    />
+  ) : (
+    <img
+      src="/avatar.png"
+      className="profile-avatar"
+      alt="avatar"
+    />
+  )}
+  <h2>{fullName}</h2>
+  <p>{username}</p>
+</div>
 
           {/* LIST */}
           <div className="profile-list">
