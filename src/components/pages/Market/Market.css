@@ -746,3 +746,98 @@
   justify-content: center;
   z-index: 5000; /* 🔥 juda yuqori */
 }
+
+
+
+/* ================= EMPTY STATE ================= */
+.empty-state {
+  grid-column: 1 / -1; /* 🔥 grid markaz */
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  color: #fff;
+  animation: fadeScale 0.35s ease;
+}
+
+@keyframes fadeScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.empty-icon {
+  font-size: 72px;
+  line-height: 1;
+  animation: shakeX 0.6s ease;
+}
+
+@keyframes shakeX {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-4px); }
+  100% { transform: translateX(0); }
+}
+
+.empty-state h3 {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.empty-state p {
+  font-size: 14px;
+  color: #aaa;
+}
+
+
+/* ================= CREATIVE BALANCE ================= */
+.creative-balance {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #2aa9ff, #005eff);
+  box-shadow: 0 10px 26px rgba(0, 90, 255, 0.45);
+  animation: popBalance 0.3s ease;
+}
+
+@keyframes popBalance {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.balance-icon {
+  font-size: 28px;
+}
+
+.balance-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.balance-label {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.balance-amount {
+  font-size: 16px;
+  font-weight: 700;
+}

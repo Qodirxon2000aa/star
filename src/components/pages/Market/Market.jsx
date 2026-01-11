@@ -194,15 +194,29 @@ const Market = ({ onClose }) => {
             <option value="expensive">Qimmat giftlar</option>
           </select>
 
-          <div className="user-balance">
-            💰 {Number(apiUser?.balance || 0).toLocaleString()} so'm
-          </div>
+          <div className="user-balance creative-balance">
+  <span className="balance-icon">💰</span>
+  <div className="balance-info">
+    <div className="balance-label">Balans</div>
+    <div className="balance-amount">
+      {Number(apiUser?.balance || 0).toLocaleString()} so'm
+    </div>
+  </div>
+</div>
+
         </div>
 
         {/* GIFTS GRID */}
         <div className="gifts-grid">
           {loading && <p className="loading-text">Loading...</p>}
-          {!loading && giftsData.length === 0 && <p className="loading-text">Giftlar topilmadi</p>}
+          {!loading && giftsData.length === 0 && (
+  <div className="empty-state">
+    <div className="empty-icon">❌</div>
+    <h3>Giftlar topilmadi</h3>
+    <p>Boshqa kategoriya tanlab ko‘ring</p>
+  </div>
+)}
+
           {!loading &&
             giftsData.map((gift) => (
               <div key={gift.id} className="gift-card" onClick={() => setSelectedGift(gift)}>
