@@ -71,12 +71,15 @@ const Market = ({ onClose }) => {
                 </div>
 
                 <div className="gift-info">
-                  <div>
+                  <div className="column">
                     <p className="gift-name">{gift.nft_id}</p>
                     <p className="gift-price">
                       {Number(gift.price).toLocaleString()} so'm
                     </p>
+                     <button className="buuy">Sotib olish</button>
                   </div>
+               
+
                 </div>
               </div>
             ))}
@@ -96,6 +99,7 @@ const Market = ({ onClose }) => {
             >
               ×
             </button>
+            <br />
 
             <div className="detail-top">
               <div className="gift-image-large">
