@@ -82,11 +82,9 @@
 /* ================= IMAGE ================= */
 .gift-image {
   height: 150px;
-  padding: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(145deg, #3b4a63, #2b364a);
 }
 
 .gift-image img {
