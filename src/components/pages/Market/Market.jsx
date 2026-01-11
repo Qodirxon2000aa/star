@@ -77,7 +77,6 @@ const Market = ({ onClose }) => {
                       {Number(gift.price).toLocaleString()} so'm
                     </p>
                   </div>
-                  <span className="buy-btn">➤</span>
                 </div>
               </div>
             ))}
@@ -132,9 +131,8 @@ const Market = ({ onClose }) => {
                   rel="noreferrer"
                   className="action-btn"
                 >
-                  ✈
+                  👀
                 </a>
-                <button className="action-btn">⤴</button>
               </div>
             </div>
           </div>

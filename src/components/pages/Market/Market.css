@@ -98,9 +98,12 @@
 .gift-info {
   position: relative;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding: 8px;
+ -webkit-box-shadow: 6px 11px 35px 15px rgba(34, 60, 80, 0.2);
+-moz-box-shadow: 6px 11px 35px 15px rgba(34, 60, 80, 0.2);
+box-shadow: 6px 11px 35px 15px rgba(34, 60, 80, 0.2);
 }
 
 .gift-name {
@@ -501,3 +504,5 @@
     font-size: 17px;
   }
 }
+
+
