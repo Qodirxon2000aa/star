@@ -3,21 +3,11 @@ import { useTelegram } from "../../../../context/TelegramContext";
 import "./Stars.css";
 import AnimatedModal from "../../ui/AnimatedModal";
 import Lottie from "lottie-react";
-
 import starsVideo from "../../../assets/stars.json";
 
-const PRESETS = [
-  { stars: 50, price: "12 999" },
-  { stars: 100, price: "25 999" },
-  { stars: 250, price: "64 999" },
-  { stars: 500, price: "129 999" },
-];
-
-const SHOW_MORE_PRESETS = [
-  { stars: 1000, price: "259 999" },
-  { stars: 5000, price: "1 299 999" },
-  { stars: 10000, price: "2 599 999" },
-];
+// Faqat stars miqdorlarini saqlaymiz
+const STAR_AMOUNTS = [50, 100, 250, 500];
+const STAR_AMOUNTS_MORE = [1000, 5000, 10000];
 
 const Stars = () => {
   const { createOrder, apiUser, user } = useTelegram();
@@ -34,23 +24,23 @@ const Stars = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [checking, setChecking] = useState(false);
   const [amount, setAmount] = useState("");
-  const [price, setPrice] = useState(0);
+  const [pricePerStar, setPricePerStar] = useState(0); // 1 Star narxi (UZS)
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
-
-  // 🔽 SHOW MORE
   const [showMore, setShowMore] = useState(false);
 
   const openModal = (type, title, message) => {
     setModal({ open: true, type, title, message });
   };
 
-  /* ⭐ PRICE */
+  /* ⭐ PRICE - API dan olish */
   useEffect(() => {
     fetch("https://m4746.myxvest.ru/webapp/settings.php")
       .then((r) => r.json())
       .then((d) => {
-        if (d.ok) setPrice(Number(d.settings.price));
+        if (d.ok && d.settings?.price) {
+          setPricePerStar(Number(d.settings.price)); // masalan: 220
+        }
       })
       .finally(() => setLoading(false));
   }, []);
@@ -87,7 +77,7 @@ const Stars = () => {
   }, [username]);
 
   const balance = apiUser?.balance || 0;
-  const totalPrice = amount && price ? Number(amount) * price : 0;
+  const totalPrice = amount && pricePerStar ? Number(amount) * pricePerStar : 0;
 
   const handleSelf = () => {
     if (user?.username) {
@@ -137,6 +127,12 @@ const Stars = () => {
     }
   };
 
+  // Dinamik preset narxini hisoblash
+  const formatPrice = (stars) => {
+    const price = stars * pricePerStar;
+    return price.toLocaleString();
+  };
+
   return (
     <div className="stars-wrapper">
       <div className="stars-card">
@@ -146,7 +142,7 @@ const Stars = () => {
 
         <h2 className="stars-title">Telegram Stars</h2>
 
-        {/* USER */}
+        {/* USER SECTION */}
         <div className="tg-user-section">
           <div className="tg-user-header">
             <div className="tg-user-title">Kimga yuboramiz?</div>
@@ -163,7 +159,7 @@ const Stars = () => {
               onChange={(e) => setUsername(e.target.value)}
             />
           ) : (
-              <div className="tg-user-chip">
+            <div className="tg-user-chip">
               <img src={userInfo.photo} alt="avatar" />
               <div className="tg-user-info">
                 <div className="tg-user-name">{userInfo.name}</div>
@@ -182,7 +178,7 @@ const Stars = () => {
           )}
         </div>
 
-        {/* AMOUNT */}
+        {/* AMOUNT INPUT */}
         <input
           type="number"
           placeholder="50 dan 10 000 gacha"
@@ -191,61 +187,57 @@ const Stars = () => {
           className="inputs"
         />
 
+        {/* ASOSIY PRESETLAR */}
         <div className="preset-list">
-          {PRESETS.map((p) => (
+          {STAR_AMOUNTS.map((stars) => (
             <div
-              key={p.stars}
-              className={`preset ${Number(amount) === p.stars ? "active" : ""}`}
-              onClick={() => setAmount(p.stars)}
+              key={stars}
+              className={`preset ${Number(amount) === stars ? "active" : ""}`}
+              onClick={() => setAmount(stars)}
             >
-              {p.stars} Stars
-              <span>{p.price} UZS</span>
+              {stars} Stars
+              <span>{formatPrice(stars)} UZS</span>
             </div>
           ))}
         </div>
 
-        {/* SHOW MORE BUTTON */}
-        
-
-        {/* SHOW MORE LIST WITH FADE */}
+        {/* KO‘PROQ PRESETLAR */}
         <div
           className={`preset-list more ${
             showMore ? "fade-in" : "fade-out"
           }`}
         >
-
-          {SHOW_MORE_PRESETS.map((p) => (
+          {STAR_AMOUNTS_MORE.map((stars) => (
             <div
-              key={p.stars}
-              className={`preset ${Number(amount) === p.stars ? "active" : ""}`}
-              onClick={() => setAmount(p.stars)}
+              key={stars}
+              className={`preset ${Number(amount) === stars ? "active" : ""}`}
+              onClick={() => setAmount(stars)}
             >
-              {p.stars} Stars
-              <span>{p.price} UZS</span>
+              {stars} Stars
+              <span>{formatPrice(stars)} UZS</span>
             </div>
           ))}
         </div>
-<button
+
+        <button
           className="show-more-btn"
           onClick={() => setShowMore((v) => !v)}
         >
           {showMore ? "Yopish ▲" : "Ko‘proq ko‘rsat ▼"}
         </button>
+
         <div className="total">
           Jami: <strong>{totalPrice.toLocaleString()} UZS</strong>
         </div>
 
         <button
           className="buy-btn1"
-          disabled={sending || !userInfo || !amount}
+          disabled={sending || !userInfo || !amount || loading}
           onClick={handleSubmit}
         >
           {sending ? "Yuborilmoqda..." : "Sotib olish"}
         </button>
-
-        
       </div>
-      
 
       <AnimatedModal
         open={modal.open}
