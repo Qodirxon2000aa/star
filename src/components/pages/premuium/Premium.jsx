@@ -3,10 +3,7 @@ import { useTelegram } from "../../../../context/TelegramContext";
 import Lottie from "lottie-react";
 import "./premium.css";
 
-// ✅ LOTTIE
 import premiumAnimation from "../../../assets/premuim.json";
-
-// ✅ MODAL
 import AnimatedModal from "../../ui/AnimatedModal";
 
 const PremiumModal = ({ onClose = () => {} }) => {
@@ -19,6 +16,13 @@ const PremiumModal = ({ onClose = () => {} }) => {
   const [selectedPlan, setSelectedPlan] = useState("3");
   const [sending, setSending] = useState(false);
   const [validationError, setValidationError] = useState("");
+  const [loadingPrices, setLoadingPrices] = useState(true);
+
+  const [prices, setPrices] = useState({
+    "3oylik": 17000,
+    "6oylik": 225000,
+    "12oylik": 295000,
+  });
 
   const [animatedModal, setAnimatedModal] = useState({
     open: false,
@@ -27,20 +31,59 @@ const PremiumModal = ({ onClose = () => {} }) => {
     message: "",
   });
 
+  // 🔥 API dan narxlarni to‘g‘ridan-to‘g‘ri olish (Stars bilan bir xil URL)
+  useEffect(() => {
+    fetch("https://m4746.myxvest.ru/webapp/settings.php")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.ok && d.settings) {
+          setPrices({
+            "3oylik": Number(d.settings["3oylik"]) || 17000,
+            "6oylik": Number(d.settings["6oylik"]) || 225000,
+            "12oylik": Number(d.settings["12oylik"]) || 295000,
+          });
+        }
+      })
+      .catch((err) => {
+        console.error("Settings API xatosi:", err);
+        // Agar API ishlamasa, default narxlar qoldiriladi
+      })
+      .finally(() => setLoadingPrices(false));
+  }, []);
+
+  // Dinamik planlar
   const plans = [
-    { id: "3", months: 3, discount: "-20%", price: 42000 },
-    { id: "6", months: 6, discount: "-37%", price: 219999000 },
-    { id: "12", months: 12, discount: "-42%", price: 389999000 },
+    {
+      id: "3",
+      months: 3,
+      label: "3 oy",
+      discount: "-20%",
+      price: prices["3oylik"],
+    },
+    {
+      id: "6",
+      months: 6,
+      label: "6 oy",
+      discount: "-37%",
+      price: prices["6oylik"],
+    },
+    {
+      id: "12",
+      months: 12,
+      label: "1 yil",
+      discount: "-42%",
+      price: prices["12oylik"],
+    },
   ];
 
   /* 👤 USER PREVIEW */
   useEffect(() => {
-    if (!username || username.length < 4) {
+    if (!username || username.trim().length < 4) {
       setUserInfo(null);
       return;
     }
 
-    const clean = username.replace("@", "");
+    const clean = username.trim().replace("@", "");
     setChecking(true);
 
     fetch(`https://tezpremium.uz/starsapi/user.php?username=@${clean}`)
@@ -59,11 +102,9 @@ const PremiumModal = ({ onClose = () => {} }) => {
   const selected = plans.find((p) => p.id === selectedPlan);
   const totalPrice = selected?.price || 0;
 
-  /* 🔥 PREMIUM.PHP ga SAQLASH — 100% MOS */
+  /* 🔥 PREMIUM.PHP ga SAQLASH */
   const savePremiumToApi = async () => {
-    const cleanUsername = username.startsWith("@")
-      ? username
-      : `@${username}`;
+    const cleanUsername = username.startsWith("@") ? username : `@${username}`;
 
     const url =
       `https://m4746.myxvest.ru/webapp/premium.php` +
@@ -73,14 +114,9 @@ const PremiumModal = ({ onClose = () => {} }) => {
       `&overall=${totalPrice}`;
 
     const res = await fetch(url);
-
-    if (!res.ok) {
-      throw new Error("Server javob bermadi");
-    }
+    if (!res.ok) throw new Error("Server javob bermadi");
 
     const data = await res.json();
-
-    // 🔥 BACKENDINGGA 1:1 MOS TEKSHIRUV
     if (data?.ok !== true) {
       throw new Error(data?.message || "Premium API xatosi");
     }
@@ -102,7 +138,7 @@ const PremiumModal = ({ onClose = () => {} }) => {
         open: true,
         type: "warning",
         title: "Balans yetarli emas",
-        message: "Hisobingizda yetarli mablag‘ yo‘q.",
+        message: `Hisobingizda yetarli mablag‘ yo‘q.\nKerak: ${totalPrice.toLocaleString()} UZS`,
       });
       return;
     }
@@ -110,24 +146,21 @@ const PremiumModal = ({ onClose = () => {} }) => {
     setSending(true);
 
     try {
-      // 1️⃣ Premium berish
+      // 1. Premium berish
       const result = await createPremiumOrder({
         months: parseInt(selectedPlan),
         sent: username.startsWith("@") ? username : `@${username}`,
         overall: totalPrice,
       });
 
-      if (!result?.ok) {
-        throw new Error("Premium yuborilmadi");
-      }
+      if (!result?.ok) throw new Error("Premium yuborilmadi");
 
-      // 2️⃣ Backend kechikish xavfi uchun kichik pauza
       await new Promise((r) => setTimeout(r, 300));
 
-      // 3️⃣ API ga yozish
+      // 2. Backendga yozish
       const apiResult = await savePremiumToApi();
 
-      // 4️⃣ Balansni yangilash
+      // 3. Balansni yangilash
       refreshUser?.();
 
       setAnimatedModal({
@@ -137,17 +170,17 @@ const PremiumModal = ({ onClose = () => {} }) => {
         message: `⭐ Telegram Premium yuborildi
 
 🆔 Order ID: ${apiResult.order_id}
-💰 Oldingi balans: ${apiResult.balance_before}
-💳 Yangi balans: ${apiResult.balance_after}
-📅 Sana: ${apiResult.data.date}`,
+💰 Oldingi balans: ${apiResult.balance_before.toLocaleString()} UZS
+💳 Yangi balans: ${apiResult.balance_after.toLocaleString()} UZS
+📅 Sana: ${apiResult.data?.date || new Date().toLocaleString()}`,
       });
 
+      // Reset form
       setUsername("");
       setUserInfo(null);
       setSelectedPlan("3");
     } catch (e) {
-      console.error("❌ PREMIUM ERROR:", e);
-
+      console.error("PREMIUM ERROR:", e);
       setAnimatedModal({
         open: true,
         type: "error",
@@ -159,10 +192,11 @@ const PremiumModal = ({ onClose = () => {} }) => {
     }
   };
 
+
+
   return (
     <div className="premium-overlay" onClick={() => onClose()}>
       <div className="premium-modal animate" onClick={(e) => e.stopPropagation()}>
-        {/* 🎬 LOTTIE */}
         <div className="vd">
           <div className="premium-video">
             <Lottie animationData={premiumAnimation} loop autoplay />
@@ -173,6 +207,7 @@ const PremiumModal = ({ onClose = () => {} }) => {
           Telegram Premium <span className="star">⭐</span>
         </h1>
 
+        {/* USER SECTION */}
         <div className="tg-user-section">
           <div className="tg-user-header">
             <div className="tg-user-title">Kimga yuboramiz?</div>
@@ -181,16 +216,14 @@ const PremiumModal = ({ onClose = () => {} }) => {
             </button>
           </div>
 
-          {!userInfo && (
+          {!userInfo ? (
             <input
               className="tg-user-input"
               placeholder="Telegram @username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
-          )}
-
-          {userInfo && (
+          ) : (
             <div className="tg-user-chip">
               <img src={userInfo.photo} alt="avatar" />
               <div className="tg-user-info">
@@ -210,20 +243,19 @@ const PremiumModal = ({ onClose = () => {} }) => {
           )}
         </div>
 
+        {/* PLANS */}
         <div className="plans-list">
           {plans.map((plan) => (
             <div
               key={plan.id}
-              className={`plan-card ${
-                selectedPlan === plan.id ? "selected" : ""
-              }`}
+              className={`plan-card ${selectedPlan === plan.id ? "selected" : ""}`}
               onClick={() => setSelectedPlan(plan.id)}
             >
               <div className="radio-circle">
                 {selectedPlan === plan.id && <div className="radio-inner" />}
               </div>
               <div className="plan-info">
-                <span>{plan.months === 12 ? "1 yil" : `${plan.months} oy`}</span>
+                <span>{plan.label}</span>
                 <span className="discount">{plan.discount}</span>
               </div>
               <div className="price">
@@ -237,7 +269,7 @@ const PremiumModal = ({ onClose = () => {} }) => {
 
         <button
           className="buy-button"
-          disabled={sending || !userInfo}
+          disabled={sending || !userInfo || loadingPrices}
           onClick={handleBuy}
         >
           {sending ? "Yuborilmoqda..." : "Telegram Premium sovg‘a qilish"}
